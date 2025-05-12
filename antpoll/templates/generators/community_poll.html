@@ -966,8 +966,6 @@
           </script>
     {% endif %}
 
-
-
     {% if qstn_status == "Closed" and is_poll_admin != "True" and show_leaderboard == "true" and is_shown_leaderboard == 1 %}
     <!--user leaderboard show-->
     <div id="points-feedback-section" style="text-align: center; margin-top:20% !important;  margin-left: auto; margin-right: auto;">
@@ -1032,6 +1030,10 @@
               voteOptions.forEach(option => {
                   option.style.display = 'inline-block'; // Or 'inline' or '' depending on your layout
               });
+
+              document.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+                radio.disabled = false;
+            });
               console.log("\n\n\n START TIMER:: 666666666\n\n\n")
               if (!qstntimersection || !qstnseconds) {
                   console.error("Timer section or countdown element not found!");
@@ -1398,7 +1400,7 @@
 
     // Function to check if user has already voted
    function checkIfUserHasVoted() {
-    console.log("calling  user voted check method!!!!!")
+    console.log("calling user voted check method!!!!!")
     frappe.call({
         method: "antpoll.antpoll.doctype.community_poll.community_poll.has_user_voted",
         args: {
@@ -1446,6 +1448,15 @@
       });
 
     }
+
+    if (workflow_phase !== "Has Started") {
+
+      document.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+          radio.disabled = true;
+      });
+    }
+
+
 
     if (is_poll_admin != "True") {
     // Submit vote logic
