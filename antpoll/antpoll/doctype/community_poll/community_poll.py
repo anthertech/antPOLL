@@ -206,11 +206,17 @@ class CommunityPoll(WebsiteGenerator):
 
         # Determine position
         position = next((idx + 1 for idx, (user, _) in enumerate(sorted_leaderboard) if user == session_user), None)
+        position_for_users = next((idx + 1 for idx, (user, _) in enumerate(sorted_leaderboard) if user == session_user), None)
+
+        if position_for_users is not None:
+            context.positions=ordinal(position_for_users)
+
         user_total_points = user_points.get(session_user, 0)
 
         # Get poll status
         context.user_total_points = user_total_points
         context.position =  position
+     
         context.sorted_leaderboard = sorted_leaderboard
 
         if current_index + 1 < len(questions):
@@ -522,3 +528,12 @@ def leaderboard_status_update(poll_id,qst_id):
             frappe.db.commit()
             frappe.publish_realtime('update_qstn_leaderboard', qst_id)
             return {"status": "successfully updated leaderboard status"}
+        
+
+def ordinal(n):
+    n = int(n)
+    if 11 <= (n % 100) <= 13:
+        suffix = ' th'
+    else:
+        suffix = {1: ' st', 2: ' nd', 3: ' rd'}.get(n % 10, ' th')
+    return f"{n}{suffix}"

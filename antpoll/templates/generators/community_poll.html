@@ -638,18 +638,15 @@
     </ul>
    
        {% if is_poll_admin != "True" %}
-   
        <div>
         <button type="button" id="submit-vote-button" style="padding: 8px 20px; cursor: pointer;" class="submit-button">
           Submit
         </button>
       </div>
-
        
         {% endif %}
         <!-- next_question_url -->
       {% if is_poll_admin == "True" %}
-
       <div>
         <button type="button" id="result-button" class="result-button" style="padding: 8px 20px; cursor: pointer;">
           BEGIN
@@ -848,6 +845,11 @@
           <div class="next-btn-sec text-center justify-content-center" style="padding: 20px 0px 50px 0px;">
             <button id="goto_next_qstn" class="next-btnn" >NEXT</button>
           </div>
+
+          {% else %}
+          <div class="text-center mt-5 pt-5">
+            <strong><p style="color:black;">End! <a href="/app/home">Back to Home</a></p></strong>
+           </div>
           {% endif %}
           <script>
             function pad(n) {
@@ -987,11 +989,17 @@
 
           <div id="userleaderboard" class="mt-2" style=" padding: 1rem; text-align: center; background: #f8f9fa; border-radius: 8px;">
             
-            <h5 class="pt-2"><strong>Your are at <span style="color:rgb(219, 8, 8); font-size: 24px;">{{ position if position else 0 }}</span> position</strong></h5>
+            <h5 class="pt-2"><strong>Your are at <span style="color:rgb(219, 8, 8); font-size: 24px;">{{ positions if positions else 0 }}</span> position</strong></h5>
             <p><strong><span style="color:rgb(219, 8, 8); font-size: 24px;">{{ user_total_points }}</span></strong> Points in total</p>
             
         </div>
     </div>
+
+    {% if not next_question_url %}
+   <div class="text-center mt-5 pt-5">
+    <strong><p style="color:black;">End! <a href="/app/home">Back to Home</a></p></strong>
+   </div>
+    {% endif %}
     {% endif %}
 
     </div> 
