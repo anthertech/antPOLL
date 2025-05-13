@@ -636,13 +636,13 @@
     </ul>
     
        {% if is_poll_admin != "True" %}
-        <button type="button" id="submit-vote-button" style="padding: 8px 20px; cursor: pointer; width:100px" class="submit-button">
+        <button type="button" id="submit-vote-button" style="padding: 8px 20px; cursor: pointer; width:100px" class="text-center ms-5 submit-button">
           Submit
         </button>
         {% endif %}
         <!-- next_question_url -->
       {% if is_poll_admin == "True" %}
-      <button type="button" id="result-button" class="result-button" style="padding: 8px 20px; cursor: pointer; width:100px">
+      <button type="button" id="result-button" class="text-center ms-5 result-button" style="padding: 8px 20px; cursor: pointer; width:100px;">
         BEGIN
       </button>
 
@@ -1423,15 +1423,22 @@
               document.querySelectorAll('input[type="radio"]').forEach(function (radio) {
                 radio.disabled = true;
             });
-            
           }
       }
-        });
+    });
     }
+
     // Call to check if the user has already voted
     if (is_poll_admin != "True") {
     checkIfUserHasVoted();
+    if (workflow_phase !== "Has Started") {
+      document.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+          radio.disabled = true;
+      });
     }
+
+    }
+  
 
     const radioButtons = document.querySelectorAll('input[name="selected_option"]');
     const submitButton = document.getElementById("submit-vote-button");
@@ -1446,17 +1453,7 @@
           }
         });
       });
-
     }
-
-    if (workflow_phase !== "Has Started") {
-
-      document.querySelectorAll('input[type="radio"]').forEach(function (radio) {
-          radio.disabled = true;
-      });
-    }
-
-
 
     if (is_poll_admin != "True") {
     // Submit vote logic
