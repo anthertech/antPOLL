@@ -1,7 +1,7 @@
 [project]
 name = "antpoll"
 authors = [
-    { name = "Anther Technologies Pvt Ltd", email = "anther.tech" }
+    { name = "avishna", email = "avishna@gmail.com"}
 ]
 description = "Poll App"
 requires-python = ">=3.10"
