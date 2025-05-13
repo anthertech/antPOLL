@@ -494,6 +494,9 @@
       font-weight: bold;
       
     }
+    #result-button{
+      text-align: center !important;
+    }
   
     @media (max-width: 768px) {
       #loading-section #countdown {
@@ -609,11 +612,11 @@
       <h4 id="message-box"></h4>
       <div class="title" style="margin-bottom: 30px;">Q: {{ current_question.question }} </div>
 
-      <div id="qstntimersection" style="display: none; color:black;">
+      <div id="qstntimersection" style="display: none; color:black;" class="mx-5 px-3">
         <p>Qstn Ends in <span id="qstn-seconds">15</span> Seconds</p>
       </div>
    
-      <ul class="poll-options d-flex flex-column gap-3 mt-3" style="list-style: none; padding-left: 0;">
+      <ul class="poll-options mx-5 px-4 d-flex flex-column gap-3 mt-3" style="list-style: none; padding-left: 0; width:100%;">
         {% for opt in options %}
         <li class="poll-option" style="margin-bottom: 10px;">
             <label for="option{{ loop.index }}" 
@@ -635,17 +638,25 @@
     </ul>
    
        {% if is_poll_admin != "True" %}
-        <button type="button" id="submit-vote-button" style="padding: 8px 20px; cursor: pointer; width:100px" class="text-center ms-5 submit-button">
+   
+       <div>
+        <button type="button" id="submit-vote-button" style="padding: 8px 20px; cursor: pointer;" class="submit-button">
           Submit
         </button>
+      </div>
 
        
         {% endif %}
         <!-- next_question_url -->
       {% if is_poll_admin == "True" %}
-      <button type="button" id="result-button" class="text-center ms-5 result-button" style="padding: 8px 20px; cursor: pointer; width:100px;">
-        BEGIN
-      </button>
+
+      <div>
+        <button type="button" id="result-button" class="result-button" style="padding: 8px 20px; cursor: pointer;">
+          BEGIN
+        </button>
+      </div>
+    
+ 
      
     
       {% endif %}
