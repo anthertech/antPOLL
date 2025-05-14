@@ -139,7 +139,17 @@ class CommunityPoll(WebsiteGenerator):
             context.next_question_url = f"?quest={next_question_text}"
         else:
             context.next_question_url = None
-            
+        
+        open_questions = []
+        for q in self.questions:
+            if q.qst_status == "Open":
+                open_questions.append(q.question.strip())
+
+        context.open_questions = open_questions
+
+        # Pick first open question (by index)
+        if open_questions:
+            context.open_question = open_questions[0]
 
         user = frappe.session.user  # Current logged-in user
         
@@ -230,12 +240,13 @@ class CommunityPoll(WebsiteGenerator):
         return context
 
     def after_insert(self):
-        self.generate_qr_codes()
+        # self.generate_qr_codes()
         route_path = self.name
         frappe.db.set_value(self.doctype, self.name, "route", route_path)
 
     def before_save(self):
-        self.generate_qr_codes()
+        pass
+        # self.generate_qr_codes()
 
     def validate(self):
         if self.questions:
@@ -247,26 +258,26 @@ class CommunityPoll(WebsiteGenerator):
                 question_texts.append(question_text)
 
     
-    def generate_qr_codes(self):
-        if not self.get("questions"):
-            return
+    # def generate_qr_codes(self):
+    #     if not self.get("questions"):
+    #         return
 
-        first_question_text = self.questions[0].question.strip()
+    #     first_question_text = self.questions[0].question.strip()
 
-        # URL encode the question text
-        question_slug = urllib.parse.quote(first_question_text)
-        url_path = f"/{self.name}?quest={question_slug}"
+    #     # URL encode the question text
+    #     question_slug = urllib.parse.quote(first_question_text)
+    #     url_path = f"/{self.name}?quest={question_slug}"
 
-        # Generate QR code
-        qr = qrcode.make(frappe.utils.get_url() + url_path) 
-        file_path = f"/tmp/{self.name}_qr.png"
-        qr.save(file_path)
+    #     # Generate QR code
+    #     qr = qrcode.make(frappe.utils.get_url() + url_path) 
+    #     file_path = f"/tmp/{self.name}_qr.png"
+    #     qr.save(file_path)
 
-        # Save to Attach field
-        with open(file_path, "rb") as f:
-            saved_file = save_file(f"{self.name}-QR.png", f.read(), self.doctype, self.name, is_private=False)
-            self.qr_code = saved_file.file_url
-            frappe.db.set_value(self.doctype, self.name, "quest_qr", saved_file.file_url)
+    #     # Save to Attach field
+    #     with open(file_path, "rb") as f:
+    #         saved_file = save_file(f"{self.name}-QR.png", f.read(), self.doctype, self.name, is_private=False)
+    #         self.qr_code = saved_file.file_url
+    #         frappe.db.set_value(self.doctype, self.name, "quest_qr", saved_file.file_url)
 
     # def generate_qr_codes(self):
     #     if not self.get("questions"):

@@ -14,10 +14,10 @@
   "poll_options_section",
   "questions",
   "qr_code_tab",
+  "has_shown_qr",
   "quest_qr",
-  "qr_preview",
   "column_break_viye",
-  "has_shown_qr"
+  "qr_preview"
  ],
  "fields": [
   {
@@ -58,6 +58,7 @@
   {
    "fieldname": "quest_qr",
    "fieldtype": "Attach Image",
+   "hidden": 1,
    "label": "quest qr",
    "read_only": 1
   },
@@ -72,6 +73,7 @@
   {
    "fieldname": "qr_preview",
    "fieldtype": "HTML",
+   "hidden": 1,
    "label": "QR Preview"
   },
   {
@@ -88,7 +90,7 @@
  "has_web_view": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-14 11:28:28.762293",
+ "modified": "2025-05-14 14:09:18.475417",
  "modified_by": "Administrator",
  "module": "antPoll",
  "name": "Community Poll",
