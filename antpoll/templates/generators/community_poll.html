@@ -509,6 +509,23 @@
       .card-qr{
         display: none !important;
       }
+
+      .confetti-button {
+        font-family: 'Helvetica', 'Arial', sans-serif;
+        display: inline-block;
+        font-size: 1em;
+        padding: 1em 1em !important;
+        border-radius: 60px !important;
+        margin: 100px auto 50px !important;
+        background-color: #4c6edd;
+        color: #fff;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        position: relative;
+        transition: transform 0.1s ease-in, box-shadow 0.25s ease-in;
+        box-shadow: 0 2px 25px #94a9ec;
+      }
     }
   
     @media (max-width: 480px) {
@@ -540,6 +557,104 @@
           opacity: 1;
       }
   }
+
+
+  /*btn animation*/
+  .confetti-button {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    display: inline-block;
+    font-size: 1em;
+    padding: 1em 2em;
+    border-radius: 60px !important;
+    margin: 100px auto 60px;
+    background-color: #4c6edd;
+    color: #fff;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.1s ease-in, box-shadow 0.25s ease-in;
+    box-shadow: 0 2px 25px #94a9ec;
+  }
+  .confetti-button:focus { outline: none; }
+
+  .confetti-button:before,
+  .confetti-button:after {
+    position: absolute;
+    content: '';
+    display: block;
+    width: 140%;
+    height: 100%;
+    left: -20%;
+    z-index: -1;
+    transition: all 0.5s ease-in-out;
+    background-repeat: no-repeat;
+  }
+
+  /* top bubbles */
+  .confetti-button:before {
+    display: none;
+    top: -75%;
+    background-image:
+      radial-gradient(circle, #4f6fd6 20%, transparent 20%),
+      radial-gradient(circle, transparent 20%, #4f6fd6 20%, transparent 30%),
+      radial-gradient(circle, #4f6fd6 20%, transparent 20%),
+      radial-gradient(circle, #4f6fd6 20%, transparent 20%),
+      radial-gradient(circle, transparent 10%, #4f6fd6 15%, transparent 20%);
+    background-size: 10% 10%, 15% 15%, 20% 20%, 12% 12%, 18% 18%;
+  }
+
+  /* bottom bubbles */
+  .confetti-button:after {
+    display: none;
+    bottom: -75%;
+    background-image:
+      radial-gradient(circle, #4f6fd6 20%, transparent 20%),
+      radial-gradient(circle, #4f6fd6 20%, transparent 20%),
+      radial-gradient(circle, transparent 10%, #4f6fd6 15%, transparent 20%),
+      radial-gradient(circle, #4f6fd6 20%, transparent 20%);
+    background-size: 15% 15%, 20% 20%, 18% 18%, 12% 12%;
+  }
+
+  .confetti-button:active {
+    transform: scale(0.9);
+    
+  }
+
+  .confetti-button.animate:before {
+    display: block;
+    animation: topBubbles 0.95s ease-in-out forwards;
+  }
+  .confetti-button.animate:after {
+    display: block;
+    animation: bottomBubbles 0.95s ease-in-out forwards;
+  }
+
+  @keyframes topBubbles {
+    0% {
+      background-position: 5% 90%, 20% 90%, 40% 90%, 60% 90%, 80% 90%;
+    }
+    50% {
+      background-position: 0% 60%, 30% 30%, 50% 0%, 70% 20%, 90% 40%;
+    }
+    100% {
+      background-position: 0% 40%, 30% 10%, 50% -20%, 70% 0%, 90% 20%;
+      background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+    }
+  }
+
+  @keyframes bottomBubbles {
+    0% {
+      background-position: 10% -10%, 40% -10%, 70% -10%, 100% -10%;
+    }
+    50% {
+      background-position: 0% 60%, 30% 80%, 60% 60%, 90% 80%;
+    }
+    100% {
+      background-position: 0% 80%, 30% 100%, 60% 80%, 90% 100%;
+      background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+    }
+  }
     </style>
   
   </head>
@@ -548,6 +663,7 @@
 
 <body>
   
+{% if poll_status == "Open" or poll_status == "Reopen" %}
 
   <div class="poll-section" id="poll-qr-sectionn" >
         
@@ -613,7 +729,7 @@
       <div class="title" style="margin-bottom: 30px;">Q: {{ current_question.question }} </div>
 
       <div id="qstntimersection" style="display: none; color:black;" class="mx-5 px-3">
-        <p>Qstn Ends in <span id="qstn-seconds">15</span> Seconds</p>
+        <p>Question Ends in <span id="qstn-seconds">15</span> Seconds</p>
       </div>
    
       <ul class="poll-options mx-5 px-4 d-flex flex-column gap-3 mt-3" style="list-style: none; padding-left: 0; width:100%;">
@@ -1005,9 +1121,34 @@
     </div> 
 </div>
     
+{% else %}
 
 
- 
+<div id="pollendscreen">
+  <div class="d-flex justify-content-center align-items-center" style="height: 70vh;">
+    <div class="text-center p-4 px-md-5 rounded-5 shadow" style="max-width: 500px; width: 100%;">
+
+      <!-- Main Heading -->
+       <img src="/assets/antpoll/images/pollend.png" alt="Message Icon">
+      <h2 class="fw-bold mb-2" style="color: rgb(58, 56, 56);">Poll Closed!</h2>
+
+      <!-- Score Message -->
+   
+      <!-- Thank You Note -->
+      <p class="text-secondary mb-3">Thanks for joining — see you in the next one!</p>
+
+      <!-- Happy Polling Button Style -->
+      <div class="d-grid gap-2 mt-3">
+        <button class=" py-3 my-3 fw-semibold confetti-button" style="font-size: 16px;">🎉 Happy Polling!</button>
+        <button class="btn btn-light mb-3 fw-semibold" style="font-size: 15px;"><a href="/app/home">Back to Home</a></button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+ {% endif %}
 
 <!-- right after your Chart.js import, or anywhere in <head> before your inline scripts -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
@@ -1449,8 +1590,8 @@
             });
 
             if (voteMsgEl) {
-              voteMsgEl.innerText = "✅ You have already voted. Please wait for the result.";
-              voteMsgEl.style.color = "#28a745";
+              voteMsgEl.innerText = "✅ You have already participated. Results will be shown soon!";
+              voteMsgEl.style.color = "#4f6fd6";
               voteMsgEl.style.fontSize = "16px";
               voteMsgEl.style.marginTop = "15px";
               voteMsgEl.style.display = "block"; // Ensure it's visible
@@ -1606,7 +1747,23 @@ if(qstnstatus == "Closed"){
     });
 
 
-
+    (function() {
+      var buttons = document.querySelectorAll('.confetti-button');
+      buttons.forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          // restart animation
+          btn.classList.remove('animate');
+          // trigger reflow to restart CSS animation
+          void btn.offsetWidth;
+          btn.classList.add('animate');
+          // clean up after animation ends
+          setTimeout(function(){
+            btn.classList.remove('animate');
+          }, 750);
+        });
+      });
+    })();
 
 
 
