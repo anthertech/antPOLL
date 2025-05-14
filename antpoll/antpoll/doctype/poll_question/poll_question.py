@@ -9,11 +9,11 @@ from frappe.model.document import Document
 
 class PollQuestion(Document):
 
-	def autoname(doc, method=None):
-		name = doc.question or ""
-		# Remove double quotes and special characters except letters, numbers, and spaces
-		name = re.sub(r'[^\w\s]', '', name)
-		doc.name = name
+	# def autoname(doc, method=None):
+	# 	name = doc.question or ""
+	# 	# Remove double quotes and special characters except letters, numbers, and spaces
+	# 	name = re.sub(r'[^\w\s]', '', name)
+	# 	doc.name = name
 	
 	def validate(self):
 		# Validate options

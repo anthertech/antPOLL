@@ -1150,11 +1150,11 @@
 
  {% endif %}
 
-<!-- right after your Chart.js import, or anywhere in <head> before your inline scripts -->
+
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
 
     <script>
-
+    
       var next_question_url = "{{ next_question_url }}"
       var is_poll_admin = "{{ is_poll_admin }}"
       const hasShownQR = "{{ has_shown_qr }}"
@@ -1177,11 +1177,26 @@
       const next_question_name = "{{next_question_name}}";
       const workflow_phase = "{{workflow_phase}}"
 
+
+   
+
+      let touchStartY = 0;
+      document.addEventListener('touchstart', function(ev) {
+        touchStartY = ev.touches[0].clientY;
+      }, {passive: false});
+  
+      document.addEventListener('touchmove', function(ev) {
+        const touchCurrentY = ev.touches[0].clientY;
+  
+        if (touchCurrentY > touchStartY && window.scrollY === 0) {
+          ev.preventDefault(); 
+        }
+      }, {passive: false});
+        
+
       frappe.ready(() => {
         
         frappe.realtime.init();        
-
-        
 
             frappe.realtime.on('show_results', (qst_id) => {
               window.location.reload();
@@ -1271,6 +1286,7 @@
       
 
         frappe.realtime.on('goto_cur_question_event', (cur_url) => {
+          
           first.style.display = "none";
           second.style.display = "none";
           console.log("current qstn event called!!",cur_url);
@@ -1740,6 +1756,8 @@
 if(qstnstatus == "Closed"){
     loadUserPointsStatus()
 }
+
+
     });
 
 
@@ -1797,6 +1815,12 @@ if(qstnstatus == "Closed"){
     const currentURL = window.location.href;
     generateQRCode(currentURL);
 
+    
+ 
+    
+
+    
+    
 </script>
 </body>
     {% endblock %}

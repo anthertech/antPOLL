@@ -2,6 +2,7 @@
  "actions": [],
  "allow_import": 1,
  "allow_rename": 1,
+ "autoname": "format:POLL-QSTN-{MM}-{###}",
  "creation": "2025-04-07 10:31:45.773425",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -45,10 +46,11 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-29 09:20:54.855142",
+ "modified": "2025-05-14 16:39:15.604078",
  "modified_by": "Administrator",
  "module": "antPoll",
  "name": "Poll Question",
+ "naming_rule": "Expression",
  "owner": "avishna@gmail.com",
  "permissions": [
   {
