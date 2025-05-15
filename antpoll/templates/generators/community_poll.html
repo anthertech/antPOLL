@@ -900,7 +900,7 @@
     {% if qstn_status == "Closed" and is_poll_admin == "True" and is_shown_leaderboard != 1 %}
     <div class="card shadow-sm rounded-4" style="width:100%;background: transparent;border-radius: 15px; margin-top:50px;">
       <div class="card-header text-white rounded-top-4 py-3" id="qstn-name">
-        <h5 class="mb-0">{{ current_question.question }}</h5>
+        <h5 class="mb-0"><strong><span style="color: rgb(212, 14, 14);">Q: </span></strong>{{ current_question.question }}</h5>
     </div>
       <!-- ADMIN RESULT SCREEN -->
       <div id="admin-results" style="width: 100%;">
@@ -1036,13 +1036,13 @@
     {% if qstn_status == "Closed" and is_poll_admin != "True" and is_shown_leaderboard != 1  %}
     <div class="card shadow-sm rounded-4" style="background: transparent;border-radius: 15px; margin-top:50px;" id="user-result">
       <div class="card-header text-white rounded-top-4 py-3" id="qstn-name">
-        <h5 class="mb-0">{{ current_question.question }}</h5>
+        <h5 class="mb-0"><strong><span style="color: rgb(212, 14, 14);">Q: </span></strong>{{ current_question.question }}</h5>
     </div>
       <!--user results-->
       <div id="user-results" class="container text-center mt-5 mb-5" style="  border-radius: 10px; padding: 20px; max-width: 500px; margin: 0 auto;">
-        <h3 class="mb-3" style="color: #343a40;">Result</h3>
+        <h4 class="mb-3" style="color: #0a0a0a; font-weight:400; font-family:sans-serif; font-size:23px;">RESULT</h4>
         {% if user_result_status == "correct" %}
-        <p class="lead" style="font-size: 1.2rem; color: black;">✅🎉 Correct answer!</p>
+        <p class="lead mt-3" style="font-size: 1.2rem; color: black;">✅🎉 Correct answer!</p>
     {% elif user_result_status == "incorrect" %}
         <p class="lead" style="font-size: 1.2rem; color: black;">❌😔 Incorrect answer</p>
     {% else %}
