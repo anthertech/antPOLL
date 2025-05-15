@@ -1199,7 +1199,7 @@
           </script>
     {% endif %}
 
-    {% if qstn_status == "Closed" and is_poll_admin != "True" and show_leaderboard == "true" and is_shown_leaderboard == 1 %}
+    {% if qstn_status == "Closed" and is_poll_admin != "True" and show_leaderboard == "true" and is_shown_leaderboard == 1 and next_question_url %}
     <!--user leaderboard show-->
     <div id="points-feedback-section" style="text-align: center; margin-top:20% !important;  margin-left: auto; margin-right: auto;">
      
@@ -1212,13 +1212,25 @@
             
         </div>
     </div>
+    {% endif %}
 
-    {% if not next_question_url %}
+    {% if qstn_status == "Closed" and is_poll_admin != "True" and show_leaderboard == "true" and is_shown_leaderboard == 1 and not next_question_url %}
+    <div id="points-feedback-section" style="text-align: center; margin-top:20% !important;  margin-left: auto; margin-right: auto;">
+     
+      <p id="point-feedback-congrts" style="font-size: 1.25rem; color: #2f855a; font-weight: 500;">Thank you for the Participation!</p>
+
+      <div id="userleaderboard" class="mt-2" style=" padding: 1rem; text-align: center; background: #f8f9fa; border-radius: 8px;">
+        
+        <h5 class="pt-2"><strong>Your are at <span style="color:rgb(219, 8, 8); font-size: 24px;">{{ positions if positions else 0 }}</span> position</strong></h5>
+        <p>Final Score is <strong><span style="color:rgb(219, 8, 8); font-size: 24px;">{{ user_total_points }}</span></strong></p>
+        
+    </div>
+  </div>
    <div class="text-center mt-5 pt-5">
     <strong><p style="color:black;">End! <a href="/app">Back to Home</a></p></strong>
    </div>
     {% endif %}
-    {% endif %}
+   
 
     </div> 
 </div>
