@@ -1304,6 +1304,7 @@
             });
             // Listen for next question URL and redirect users
             frappe.realtime.on('start_qstn_timer', (qst_id) => {
+              console.log("qstt timer start 88888888888888888888")
               const voteOptions = document.querySelectorAll('.vote-option');
               voteOptions.forEach(option => {
                   option.style.display = 'inline-block'; // Or 'inline' or '' depending on your layout
@@ -1311,6 +1312,7 @@
 
               document.querySelectorAll('input[type="radio"]').forEach(function (radio) {
                 radio.disabled = false;
+                
             });
               console.log("\n\n\n START TIMER:: 666666666\n\n\n")
               if (!qstntimersection || !qstnseconds) {
@@ -1628,17 +1630,21 @@
         });
     }
 
-    
-    document.getElementById('rules-button').addEventListener('click', function() {
-      document.getElementById('instruction-popup').style.display="block";
-    });
-  
+    const rulesbtn = document.getElementById('rules-button');
+    const closerulebtn = document.getElementById('close-popup');
+
+    if(rulesbtn){
+      rulesbtn.addEventListener('click', function() {
+        document.getElementById('instruction-popup').style.display="block";
+      });  
+    }
+    if(closerulebtn){
     // Close instruction popup when "Close" is clicked
-    document.getElementById('close-popup').addEventListener('click', function() {
+    closerulebtn.addEventListener('click', function() {
       document.getElementById('instruction-popup').style.display="none";
     });
   
-
+    }
     // Function to show custom toast message
     function showCustomToast(message) {
         let toast = document.createElement("div");
@@ -1695,6 +1701,7 @@
         },
         callback: function (response) {
           if (response.message && response.message.has_voted) {
+            console.log("user voted!!")
               console.log("current user has voted to this question");
   
               const submitBtn = document.getElementById("submit-vote-button");
@@ -1717,6 +1724,7 @@
               voteMsgEl.style.display = "block"; // Ensure it's visible
             }
           }
+        
       }
     });
     }
@@ -1725,6 +1733,7 @@
     if (is_poll_admin != "True") {
     checkIfUserHasVoted();
     if (workflow_phase !== "Has Started") {
+      console.log("timer not statred for vote")
       document.querySelectorAll('input[type="radio"]').forEach(function (radio) {
           radio.disabled = true;
       });
@@ -1897,27 +1906,30 @@ if(qstnstatus == "Closed"){
       const container2 = document.getElementById("qr-image-start");
 
       // Clear previous QR code
-      container.innerHTML = "";
-      container2.innerHTML = "";
 
-      // Generate new QR code
-      qrCode = new QRCode(container, {
-        text: value,
-        width: 300,
-        height: 300,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-
-      qrCode2 = new QRCode(container2, {
-        text: value,
-        width: 300,
-        height: 300,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
+      if (container) {
+        container.innerHTML = "";
+        new QRCode(container, {
+          text: value,
+          width: 300,
+          height: 300,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      }
+    
+      if (container2) {
+        container2.innerHTML = "";
+        new QRCode(container2, {
+          text: value,
+          width: 300,
+          height: 300,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      }
     }
 
     const currentURL = window.location.href;
