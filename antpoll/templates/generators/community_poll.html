@@ -148,10 +148,10 @@
       }
         .qr-timer-message{
             
-            padding: 30px 30px;
+            padding: 0px 30px 30px 30px;
             border-radius: 6px;
             color: #000000 !important;
-            margin-top: 50px;
+          
         }
         .animated-message {
             display: inline-block;
@@ -378,15 +378,34 @@
         font-size: 16px;
         font-weight: bold;
         border-radius: 8px;
-        border:1px solid #8f8f8f;;
+        border:1px solid #8f8f8f;
         margin-top: 20px;
         cursor: pointer;
         transition: 0.3s;
       }
-    
+    .instruction-btn{
+     /** color: #b92309; **/
+     padding: 10px 24px;
+     background-color: #000000;
+     color: white;
+     border-radius: 8px;
+     border:1px solid #8f8f8f;
+
+    }
+
+    .instruction-btn:hover{
+      /** color: #b92309; **/
+      background-color: #131313;
+      color: rgb(240, 239, 239);
+
+ 
+     }
+     .pollstartbtn{
+      margin-left:0px;
+     }
       #submit-vote-button:hover, #result-button:hover , .next-btnn:hover, .next-btnn-start:hover{
-        background: #cebf95;
-        border-color: #af9c68;
+        background: #b92309;
+        color: white
         ;
       }
       .next-btn-sec {
@@ -693,6 +712,11 @@
   .close-btn:hover {
     background-color: #d32f2f;
   }
+
+  @keyframes rotateLogo {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
     </style>
   
   </head>
@@ -707,38 +731,61 @@
   <!-- Instruction and Timer -->
   {% if is_poll_admin == "True" %}
   <div class="instruction-side" id="qr-section">
-    <div>
-      <img src="" alt=""><span>ANTHER</span>
-    </div>
-    <h2 style="font-weight: 400; color:black; line-height:60px;font-family: sans-serif;">Quick <span style="font-weight: 400;color: rgb(141, 49, 49);">Poll</span> <br>
-      <span style="font-weight: 400;">Ready to Guess? </span>
+    
+    <h2 style="font-weight: 400; color:black; line-height:60px;font-family: sans-serif;">
+      <img src="assets/antpoll/images/anthr1-lg.webp" alt="Anther Logo"
+      style="max-width:40px; width:100%; height:auto; object-fit:contain;
+             animation: rotateLogo 10s linear infinite;">
+      Quick <span style="font-weight: 400;color: rgb(199, 12, 12);">Poll</span> <br>
+      <span style="font-weight: 400; font-size:25px;">Ready to Guess? </span>
     </h2>
 
+    {% if instructions %}
+    <div id="instruction-popup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0, 0, 0, 0.5); z-index:1000; overflow:auto; padding:40px 20px; box-sizing:border-box;">
+      <div style="background:rgb(236, 233, 226); padding:30px 40px; border-radius:12px; max-width:600px; margin:60px auto; box-shadow:0 4px 20px rgba(0,0,0,0.3); text-align:center; font-family:sans-serif;">
+  
+        <h3 style="font-size:24px; margin-bottom:15px; color:rgb(190, 30, 30);">Poll Rules</h3>
+  
+        <p style="font-size:16px; color:#444; margin-bottom:15px;">
+          Please read the instructions before starting the poll:
+        </p>
+  
+        <div style="font-size:15px; color:#333; line-height:1.7; margin-bottom:25px; text-align:left;">
+          {{ instructions }}
+        </div>
+  
+        <button id="close-popup" style="padding:10px 24px; background-color:#b92309; color:#fff; border:none; border-radius:6px; font-size:15px; cursor:pointer;" onmouseover="this.style.backgroundColor='rgb(185, 41, 41)'" onmouseout="this.style.backgroundColor='rgb(212, 58, 58)'">
+          Close
+        </button>
+  
+      </div>
+    </div>
+ 
+    {% endif %}
 
 
     <div class="qr-image" id="qr-image-start"></div>
     <h5 class="mt-5 text-dark ml-3 scan-qr-text" style="font-weight: 500;">SCAN THE QR FOR JOINING !</h5>
    
     <!-- Rules Button -->
-   
+    
 
   </div>
 
   <!-- Image Section -->
   <div class="image-side" id="qr-section">
     <img src="/assets/antpoll/images/bgpoll.png" alt="Poll Image" class="poll-image">
-    <div style="margin-top: -40px; margin-left:-40px;">
-      <p class="players" id="total-view-count" style="color:black;font-size:20px;">PLAYERS : {{viewss}} </p>
-      
-      <button id="rules-button" class="btn btn-primary" style="padding: 13px 30px;;">INSTRUCTIONS</button>
-    <button id="start-poll-button" class="next-btnn-start" style="margin-left: -2px;">START</button>
-    
-    </div>
+    <p class="players" id="total-view-count" style="color:black;font-size:22px;">PLAYERS : {{viewss}} </p>
+    <button id="rules-button" class="instruction-btn" >INSTRUCTIONS</button>
+    <button id="start-poll-button" class="next-btnn-start pollstartbtn">START</button>
   </div>
 
   {% endif %}
 
   {% if is_poll_admin !="True" %}
+  <img src="assets/antpoll/images/anthr1-lg.webp" alt="Anther Logo"
+  style="margin-top:20px; max-width:50px; width:100%; height:auto; object-fit:contain;
+         animation: rotateLogo 10s linear infinite;">
   <h4 id="timer-message" class="qr-timer-message animated-message"><strong>Please wait,</strong> <br>starting the poll soon...
     <br>
   </h4>
@@ -795,7 +842,7 @@
                    style="cursor: pointer; transition: all 0.2s ease; background:transparent; font-weight: bold;">
                 
                 {% if is_poll_admin != "True" %}
-                <input style="{% if workflow_phase != 'Has Started' %}display: none;{% endif %}" class="form-check-input m-0 vote-option" type="radio" 
+                <input style="background:transparent;{% if workflow_phase != 'Has Started' %}display: none;{% endif %}" class="form-check-input m-0 vote-option" type="radio" 
                        id="option{{ loop.index }}" 
                        name="selected_option" 
                        value="{{ opt.option }}" 
