@@ -24,7 +24,7 @@ class CommunityPollUsers(Document):
 				"first_name":self.first_name,
 				"mobile_no":self.mobile_number,
 				"new_password":self.password,
-				"send_welcome_email":1,
+				"send_welcome_email":0,
 				"role_profile_name":"Poll User",
 				"user_type":"System User"
 

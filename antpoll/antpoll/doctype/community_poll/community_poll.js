@@ -36,6 +36,8 @@ frappe.ui.form.on("Community Poll", {
             frm.set_df_property("status", "read_only", 1);
             frm.set_df_property("published", "read_only", 1);
             frm.set_df_property("end_date", "read_only", 1);
+            frm.set_df_property("has_shown_qr","read_only",1);
+            frm.set_df_property("questions","read_only",1);
 
             frm.fields_dict.options.grid.wrapper.find('.grid-add-row').hide();
             frm.fields_dict.options.grid.wrapper.find('.grid-remove-rows').hide();

@@ -251,7 +251,6 @@ class CommunityPoll(WebsiteGenerator):
 
         if self.name:
             self.route = self.name
-           
 
     
     # def generate_qr_codes(self):
