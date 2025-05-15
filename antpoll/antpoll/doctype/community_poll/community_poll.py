@@ -239,14 +239,6 @@ class CommunityPoll(WebsiteGenerator):
         context.no_cache = 1
         return context
 
-    def after_insert(self):
-        # self.generate_qr_codes()
-        route_path = self.name
-        frappe.db.set_value(self.doctype, self.name, "route", route_path)
-
-    def before_save(self):
-        pass
-        # self.generate_qr_codes()
 
     def validate(self):
         if self.questions:
@@ -256,6 +248,10 @@ class CommunityPoll(WebsiteGenerator):
                 if question_text in question_texts:
                     frappe.throw("This question has already been added")
                 question_texts.append(question_text)
+
+        if self.name:
+            self.route = self.name
+           
 
     
     # def generate_qr_codes(self):
