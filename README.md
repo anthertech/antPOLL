@@ -4,7 +4,7 @@
 ### <span style="color:purple">Polling App</span>
 
 
-**antPOLL** is an interactive quiz and polling app built on the powerful Frappe framework. It allows you to create time-based, multiple-choice polls with real-time leaderboards based on accuracy and speed. Designed for learning, engagement, and competition, Ant-POLL is perfect for internal trainings, team contests, educational institutions, and community engagement.
+**antPOLL** is an interactive quiz and polling app built on the powerful Frappe framework. It allows you to create time-based, multiple-choice polls with real-time leaderboards based on accuracy and speed. Designed for learning, engagement, and competition, antPOLL is perfect for internal trainings, team contests, educational institutions, and community engagement.
 
 ---
 
@@ -37,7 +37,7 @@
 > 
 > - `qrcode==8.1`
 
-**Follow these steps to install Ant-POLL on your ERPNext/Frappe site:**
+**Follow these steps to install antPOLL on your ERPNext/Frappe site:**
 
 ```bash
 # Step 1: Navigate to your Frappe bench directory
@@ -71,6 +71,8 @@ bench --site yoursite.com migrate
 
         Set the Question Timer and Redirection Timer in Poll Settings.
 
+        enable "Enable Default Leaderboard".
+
     🔹Add Poll Questions
 
         Add questions with multiple options.
@@ -83,7 +85,11 @@ bench --site yoursite.com migrate
 
     🔹Launch the Poll
 
-        Go to the Community Poll Web Page, and click "Launch Poll" via the Poll Actions.
+        Go to the Community Poll, and click "Launch" via the Poll Actions.
+
+    🔹End the Poll
+
+        Go to the Community Poll, and click "End" via the Poll Actions.
 
     🔹Track Results
 
@@ -94,11 +100,8 @@ bench --site yoursite.com migrate
     📝 Multiple Answer Questions
     Support for questions with more than one correct option.
 
-    ⭐ Rating-Based Questions
-    Let users rate a topic instead of selecting predefined options.
-
     🧩 Question Type Categories
-    Support for configuring poll types like single-answer, multi-answer, and rating-based.
+    Support for configuring poll types like single-answer, multi-answer, and ⭐ rating-based.
 
     🛠️ Advanced Customization
     More control over poll behavior, layout, and timer settings.
