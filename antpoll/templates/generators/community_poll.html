@@ -1054,11 +1054,14 @@
 
       <!-- Leaderboard for admin-->
     {% if qstn_status == "Closed" and is_poll_admin == "True" and show_leaderboard == "true" and is_shown_leaderboard == 1 %}
-          <div class="card card-leaderb" id="adminleaderboard">
-            <div class="title">Leaderboard</div>
-            <canvas id="leaderboardChart" width="" height="500" style="border-left:none;"></canvas>
-          </div>
-
+    <div class="card card-leaderb shadow-lg rounded-xl border border-gray-200 bg-white p-4" id="adminleaderboard">
+      <div class="title text-xl font-semibold text-gray-700 mb-4">Leaderboard</div>
+      <div id="leaderboardChartContainer" class="relative">
+        <canvas id="leaderboardChart" style="display: none;"></canvas>
+        <p id="noDataMessage" style="text-align:center; color:#888; margin-top: 20px;">Loading...</p>
+      </div>
+    </div>
+    
           {% if next_question_url %}
           <div class="next-btn-sec text-center justify-content-center" style="padding: 20px 0px 50px 0px;">
             <button id="goto_next_qstn" class="next-btnn" >NEXT</button>
@@ -1071,132 +1074,142 @@
           {% endif %}
           <script>
             function pad(n) {
-                return n < 10 ? '0' + n : n;
-              }
+              return n < 10 ? '0' + n : n;
+            }
           
-              // Return "YYYY-MM-DD" for a Date
-              function formatDate(d) {
-                return d.getFullYear()
-                    + '-' + pad(d.getMonth() + 1)
-                    + '-' + pad(d.getDate());
-              }
+            function formatDate(d) {
+              return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+            }
           
-              async function loadLeaderboardData() {
-                const today = new Date();
-                const todayStr = formatDate(today);
+            async function loadLeaderboardData() {
+              const today = new Date();
+              const todayStr = formatDate(today);
           
-                // Use the same date for both ends of the range
-                const url = `/api/method/frappe.desk.leaderboard.get_energy_point_leaderboard`
-                          + `?date_range=["${todayStr}","${todayStr}"]`
-                          + `&limit=20`;
-            try {
+              const url = `/api/method/antpoll.antpoll.doctype.community_poll.community_poll.get_custom_leaderboard`
+                + `?community_poll=${encodeURIComponent("{{ doc.name }}")}`
+                + `&date_range=["${todayStr}","${todayStr}"]`
+                + `&limit=20`;
+          
+              try {
                 const response = await fetch(url);
-                const result   = await response.json();
+                const result = await response.json();
                 console.log("Leaderboard Data:", result);
-
+          
+                const canvas = document.getElementById('leaderboardChart');
+                const message = document.getElementById('noDataMessage');
+          
                 if (result.message && Array.isArray(result.message)) {
-                  // Step 1: Filter users who have points greater than 0
                   const usersWithPoints = result.message.filter(user => user.value > 0);
-              
-                  // Step 2: Take the first 20 users from the filtered list
                   const top20Users = usersWithPoints.slice(0, 20);
-              
-                  // Step 3: Extract labels and data
+          
+                  if (top20Users.length === 0) {
+                    canvas.style.display = "none";
+                    message.innerText = "No points recorded for this poll yet.";
+                    message.style.display = "block";
+                    return;
+                  }
+          
                   const labels = top20Users.map(user => user.name);
                   const data = top20Users.map(user => user.value);
-              
-                  // Step 4: Render the chart
+          
+                  canvas.style.display = "block";
+                  message.style.display = "none";
+          
                   renderLeaderboardChart(labels, data);
-              } else {
-                  console.error("Invalid leaderboard data format:", result);
-              }
-              
-        } catch (error) {
-            console.error("Failed to load leaderboard data:", error);
-        }
-        }
-      function renderLeaderboardChart(labels, data) {
-      const ctxLeaderboard = document.getElementById('leaderboardChart').getContext('2d');
-
-      new Chart(ctxLeaderboard, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [{
-            data: data,
-            backgroundColor: '#d15c5c',
-            borderRadius: 4,
-            barThickness: 25,
-            categoryPercentage: 0, // Added: control gap between bars
-            barPercentage: 0.8     // Added: control width of individual bar
-          }]
-        },
-        options: {
-          indexAxis: 'y',
-          scales: {
-            x: {
-              beginAtZero: true,
-              grid: {
-                display: true,
-                color: '#e5e7eb', // light gray lines
-                borderColor: '#e5e7eb',
-                drawBorder: false // ✅ Added: remove vertical line from X axis
-              },
-              ticks: {
-                display: false
-              }
-            },
-            y: {
-              beginAtZero: true,
-              grid: {
-                display: true,
-                color: '#e5e7eb', // light gray lines
-                borderColor: '#e5e7eb',
-                borderWidth: 0,
-                drawBorder: false // already present ✅
-              },
-              ticks: {
-                display: true,
-                callback: function(value, index) {
-                  return `${data[index]}`; // Corrected template string
-                },
-                align: 'start',
-                padding: 25,
-                color: '#6B7280', // Tailwind slate-500
-                font: {
-                  size: 14
+                } else {
+                  canvas.style.display = "none";
+                  message.innerText = "Invalid data received.";
+                  message.style.display = "block";
                 }
+              } catch (error) {
+                console.error("Failed to load leaderboard data:", error);
+                document.getElementById('noDataMessage').innerText = "Error loading leaderboard.";
               }
             }
-          },
-          plugins: {
-            legend: {
-              display: false
-            },
-            tooltip: {
-              enabled: false
-            },
-            datalabels: {
-              anchor: 'center',
-              align: 'center',
-              color: '#ffffff',
-              font: {
-                weight: 'bold',
-                size: 14
-              },
-              formatter: function(value, context) {
-                return context.chart.data.labels[context.dataIndex]; // Show name in center
-              }
+          
+            function renderLeaderboardChart(labels, data) {
+              const ctxLeaderboard = document.getElementById('leaderboardChart').getContext('2d');
+          
+              new Chart(ctxLeaderboard, {
+                type: 'bar',
+                data: {
+                  labels: labels,
+                  datasets: [{
+                    data: data,
+                    backgroundColor: '#d15c5c',
+                    borderRadius: 4,
+                    barThickness: 25,
+                    categoryPercentage: 0,
+                    barPercentage: 0.8
+                  }]
+                },
+                options: {
+                  indexAxis: 'y',
+                  scales: {
+                    x: {
+                      beginAtZero: true,
+                      grid: {
+                        display: true,
+                        color: '#e5e7eb',
+                        borderColor: '#e5e7eb',
+                        drawBorder: false
+                      },
+                      ticks: {
+                        display: false
+                      }
+                    },
+                    y: {
+                      beginAtZero: true,
+                      grid: {
+                        display: true,
+                        color: '#e5e7eb',
+                        borderColor: '#e5e7eb',
+                        borderWidth: 0,
+                        drawBorder: false
+                      },
+                      ticks: {
+                        display: true,
+                        callback: function(value, index) {
+                          return `${data[index]}`;
+                        },
+                        align: 'start',
+                        padding: 25,
+                        color: '#6B7280',
+                        font: {
+                          size: 14
+                        }
+                      }
+                    }
+                  },
+                  plugins: {
+                    legend: {
+                      display: false
+                    },
+                    tooltip: {
+                      enabled: false
+                    },
+                    datalabels: {
+                      anchor: 'center',
+                      align: 'center',
+                      color: '#ffffff',
+                      font: {
+                        weight: 'bold',
+                        size: 14
+                      },
+                      formatter: function(value, context) {
+                        return context.chart.data.labels[context.dataIndex];
+                      }
+                    }
+                  }
+                },
+                plugins: [ChartDataLabels]
+              });
             }
-          }
-        },
-        plugins: [ChartDataLabels]
-      });
-    }
-      
-    // Load leaderboard data when the page content is loaded
-    window.addEventListener('DOMContentLoaded', loadLeaderboardData);
+          
+            // Load leaderboard on page ready
+            window.addEventListener('DOMContentLoaded', loadLeaderboardData);
           </script>
+          
     {% endif %}
 
     {% if qstn_status == "Closed" and is_poll_admin != "True" and show_leaderboard == "true" and is_shown_leaderboard == 1 and next_question_url %}

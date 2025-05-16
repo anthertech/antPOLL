@@ -2,15 +2,13 @@
 # For license information, please see license.txt
 
 
-from datetime import timedelta
 import frappe
 from frappe.website.website_generator import WebsiteGenerator 
 import qrcode  
 import os
-from frappe.utils.file_manager import save_file 
-from frappe.utils import now_datetime
 from datetime import datetime, date
 from collections import defaultdict
+from frappe.utils import getdate
 
 
 import urllib.parse
@@ -47,7 +45,7 @@ class CommunityPoll(WebsiteGenerator):
         context.instructions = settings.instructions
         context.question_duration = settings.question_duration
         context.poll_start_duration = settings.poll_start_duration
-        poll_start_duration = frappe.db.get_single_value("Poll Settings", "poll_start_duration")  # returns timedelta
+        poll_start_duration = frappe.db.get_single_value("Poll Settings", "poll_start_duration")  
 
         poll_start_seconds = int(poll_start_duration.total_seconds())
         context.poll_start_seconds = poll_start_seconds
@@ -198,11 +196,19 @@ class CommunityPoll(WebsiteGenerator):
         today_start = datetime.combine(date.today(), datetime.min.time())
         today_end = datetime.combine(date.today(), datetime.max.time())
 
+        poll_votes = frappe.get_all(
+        "Poll Vote",
+        filters={"poll": self.name},
+        fields=["name"]
+        )
+        poll_vote_names = [pv.name for pv in poll_votes]
+
         # Fetch all energy point logs from today
         logs = frappe.get_all(
             "Energy Point Log",
-            filters={"creation": ["between", [today_start, today_end]],"reference_doctype":"Poll Vote"},
+            filters={"creation": ["between", [today_start, today_end]],"reference_doctype":"Poll Vote","reference_name": ["in", poll_vote_names]},
             fields=["user", "points"],
+
         )
 
         user_points = defaultdict(int)
@@ -319,6 +325,39 @@ class CommunityPoll(WebsiteGenerator):
     #     frappe.db.set_value(self.doctype, self.name, "modified", frappe.utils.now())
         
 
+@frappe.whitelist(allow_guest=True)
+def get_custom_leaderboard(community_poll, date_range=None, limit=20):
+    print("\n\n\nleaderboard point api called!!!!\n")
+    if date_range:
+        from_date, to_date = [getdate(d) for d in frappe.parse_json(date_range)]
+    else:
+        from_date = to_date = getdate()
+
+    # Get relevant Poll Vote names
+    poll_votes = frappe.get_all(
+        "Poll Vote",
+        filters={"poll": community_poll},
+        pluck="name"
+    )
+    # Get Energy Point Logs filtered by those Poll Votes
+    logs = frappe.get_all(
+        "Energy Point Log",
+        filters={
+            "reference_doctype": "Poll Vote",
+            "reference_name": ["in", poll_votes],
+            "creation": ["between", [from_date, to_date]]
+        },
+        fields=["user", "points"]
+    )
+    user_points = defaultdict(int)
+    for log in logs:
+        user_points[log.user] += log.points
+
+    # Sort and limit
+    sorted_data = sorted(user_points.items(), key=lambda x: x[1], reverse=True)[:int(limit)]
+    print("sorted data:::\n",sorted_data)
+    print("-----------------------------\n\n")
+    return [{"name": user, "value": points} for user, points in sorted_data]
 
 @frappe.whitelist(allow_guest=True)
 def get_total_views(q_name,poll_id):
