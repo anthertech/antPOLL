@@ -831,7 +831,7 @@
       <div class="title" style="margin-bottom: 30px;">Q: {{ current_question.question }} </div>
 
       <div id="qstntimersection" style="display: none; color:black;" class="mx-5 px-3">
-        <p>Question Ends in <span id="qstn-seconds">15</span> Seconds</p>
+        <p>Question Ends in <span id="qstn-seconds">{{ question_duration if question_duration else 0}}</span> Seconds</p>
       </div>
    
       <ul class="poll-options mx-5 px-4 d-flex flex-column gap-3 mt-3" style="list-style: none; padding-left: 0; width:100%;">
@@ -1286,6 +1286,8 @@
       const feedback_sec = document.getElementById("points-feedback-section");
       const qstntimersection = document.getElementById("qstntimersection");
       const qstnseconds = document.getElementById("qstn-seconds");
+      const qstncountdownel = "{{question_duration}}";
+
       const goto_leaderboard = document.getElementById("goto_leaderboard");
       const testbc = document.getElementById("testbc");
       const next_question_name = "{{next_question_name}}";
@@ -1337,7 +1339,7 @@
                   qstntimersection.style.display = "block";
                   qstnseconds.style.display = "inline";
           
-                  let secondsLeft = parseInt(qstnseconds.textContent) || 15;
+                  let secondsLeft = qstncountdownel || 15;
                   qstnseconds.textContent = secondsLeft;
           
                   const interval = setInterval(() => {

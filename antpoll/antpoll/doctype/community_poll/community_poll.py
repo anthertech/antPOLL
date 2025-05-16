@@ -20,7 +20,6 @@ class CommunityPoll(WebsiteGenerator):
 
     website = frappe._dict(
         template="templates/generators/community_poll.html",
-        # template="templates/generators/polls.html",
         condition_field = "is_published",
         page_title_field = "title",
     )
@@ -41,10 +40,12 @@ class CommunityPoll(WebsiteGenerator):
         # context.leaderboard = self.show_leaderboard
 
         settings = frappe.get_doc("Poll Settings", "Poll Settings") 
+
         if settings.default_leaderboard:
             context.show_leaderboard = "true"
             
         context.instructions = settings.instructions
+        context.question_duration = settings.question_duration
         context.poll_start_duration = settings.poll_start_duration
         poll_start_duration = frappe.db.get_single_value("Poll Settings", "poll_start_duration")  # returns timedelta
 
