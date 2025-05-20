@@ -13,7 +13,7 @@
  "is_hidden": 0,
  "label": "Poll",
  "links": [],
- "modified": "2025-04-29 09:38:06.639553",
+ "modified": "2025-05-20 13:23:10.451732",
  "modified_by": "Administrator",
  "module": "antPoll",
  "name": "Poll",
@@ -24,10 +24,10 @@
  "quick_lists": [],
  "roles": [
   {
-   "role": "Poll Admin"
+   "role": "Poll Master"
   },
   {
-   "role": "Poll User"
+   "role": "Participant"
   }
  ],
  "sequence_id": 1.0,

@@ -24,8 +24,8 @@ frappe.ui.form.on("Community Poll", {
             frm.fields_dict.qr_preview.$wrapper.html(html);
         }
        
-        // Check if the user has the role "Poll User"
-        if (!frappe.user.has_role('Poll Admin') && frappe.user.has_role("Poll User")) {
+        // Check if the user has the role "Participant"
+        if (!frappe.user.has_role('Poll Master') && frappe.user.has_role("Participant")) {
 
             console.log("yes")
             console.log(frappe.session.user)

@@ -83,7 +83,7 @@
    "email": 1,
    "print": 1,
    "read": 1,
-   "role": "Poll Admin",
+   "role": "Poll Master",
    "select": 1,
    "share": 1,
    "write": 1

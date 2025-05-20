@@ -163,13 +163,7 @@ fixtures = [
    {
   "doctype": "Role",
   "filters": [
-    ["role_name", "in", ["Poll User", "Poll Admin"]]
-  ]
-},
-{
-  "doctype": "Role Profile",
-  "filters": [
-    ["role_profile", "in", ["Poll Master", "Poll User"]]
+    ["role_name", "in", ["Participant", "Poll Master"]]
   ]
 },
 {

@@ -25,13 +25,10 @@ class CommunityPollUsers(Document):
 				"mobile_no":self.mobile_number,
 				"new_password":self.password,
 				"send_welcome_email":0,
-				"role_profile_name":"Poll User",
 				"user_type":"System User"
 
 			})
-			roles = frappe.get_roles("Poll User")
-			for role in roles:
-				doc.append("roles", {"role": role})
+			doc.append("roles", {"role": "Participant"})
 			
 			doc.save(ignore_permissions=True)
 

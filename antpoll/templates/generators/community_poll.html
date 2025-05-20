@@ -916,10 +916,11 @@
         </div>
       </div>
       
-
+ 
     <div class="next-btn-sec text-center justify-content-center" style="padding: 20px 0px 50px 0px;">
       <button id="goto_leaderboard" class="next-btnn" >Leaderboard</button>
     </div>
+
       <!-- Chart.js Scripts -->
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
@@ -1213,6 +1214,7 @@
     {% endif %}
 
     {% if qstn_status == "Closed" and is_poll_admin != "True" and show_leaderboard == "true" and is_shown_leaderboard == 1 and next_question_url %}
+    
     <!--user leaderboard show-->
     <div id="points-feedback-section" style="text-align: center; margin-top:20% !important;  margin-left: auto; margin-right: auto;">
      
@@ -1244,7 +1246,6 @@
    </div>
     {% endif %}
    
-
     </div> 
 </div>
     

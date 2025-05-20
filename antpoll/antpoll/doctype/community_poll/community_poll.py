@@ -155,7 +155,7 @@ class CommunityPoll(WebsiteGenerator):
         roles = frappe.get_roles(user)
         context.roles = roles  
         context.user = user
-        if "Poll Admin" in roles:
+        if "Poll Master" in roles:
             context.is_poll_admin = "True"
             print("yessss")
 

@@ -7,9 +7,9 @@
   "home_page": null,
   "is_custom": 0,
   "modified": "2025-04-03 11:10:10.257926",
-  "name": "Poll User",
+  "name": "Participant",
   "restrict_to_domain": null,
-  "role_name": "Poll User",
+  "role_name": "Participant",
   "two_factor_auth": 0
  },
  {
@@ -20,9 +20,9 @@
   "home_page": null,
   "is_custom": 0,
   "modified": "2025-04-22 11:09:43.503753",
-  "name": "Poll Admin",
+  "name": "Poll Master",
   "restrict_to_domain": null,
-  "role_name": "Poll Admin",
+  "role_name": "Poll Master",
   "two_factor_auth": 0
  }
 ]

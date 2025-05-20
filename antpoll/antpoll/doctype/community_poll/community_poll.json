@@ -118,7 +118,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Poll Admin",
+   "role": "Poll Master",
    "select": 1,
    "share": 1,
    "write": 1
@@ -129,7 +129,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Poll User",
+   "role": "Participant",
    "select": 1,
    "share": 1,
    "write": 1
