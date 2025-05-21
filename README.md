@@ -133,4 +133,4 @@ Poll App is released under the MIT License — free to use and modify for person
 
 Have questions or need help?
 
-    🔗 GitHub: github.com/anthertech/pollapp
+    🔗 GitHub: github.com/anthertech/antPOLL

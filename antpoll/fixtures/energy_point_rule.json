@@ -19,7 +19,7 @@
  },
  {
   "apply_only_once": 1,
-  "condition": "doc.is_correct",
+  "condition": "doc.is_correct and not doc.is_first",
   "docstatus": 0,
   "doctype": "Energy Point Rule",
   "enabled": 1,
@@ -27,7 +27,7 @@
   "for_assigned_users": 0,
   "for_doc_event": "Custom",
   "max_points": 0,
-  "modified": "2025-05-20 13:44:55.469101",
+  "modified": "2025-05-21 13:19:14.359001",
   "multiplier_field": null,
   "name": "Poll Second Rule",
   "points": 5,

@@ -6,6 +6,7 @@ from frappe.model.document import Document
 from datetime import time
 
 
+
 class PollVote(Document):
 
 	def after_insert(self):
