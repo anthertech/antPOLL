@@ -717,6 +717,20 @@
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
+
+  /* Prevent text selection */
+.user-select-none {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE10+ */
+  user-select: none;         /* Standard */
+}
+
+/* Disable iOS Safari long press callout (copy menu) */
+.no-touch-callout {
+  -webkit-touch-callout: none; /* iOS Safari */
+}
+
     </style>
   
   </head>
@@ -828,10 +842,10 @@
   <!-- Existing Question Card -->
     <div class="card card-qstn" id="card-qstn"> 
       <h4 id="message-box"></h4>
-      <div class="title" style="margin-bottom: 30px;">Q: {{ current_question.question }} </div>
+      <div class="title user-select-none no-touch-callout" id="no-select" style="margin-bottom: 30px;">Q: {{ current_question.question }} </div>
 
       <div id="qstntimersection" style="display: none; color:black;" class="mx-5 px-3">
-        <p>Question Ends in <span id="qstn-seconds">{{ question_duration if question_duration else 0}}</span> Seconds</p>
+        <p>Question Ends in <span id="qstn-seconds" >{{ question_duration if question_duration else 0}}</span> Seconds</p>
       </div>
    
       <ul class="poll-options mx-5 px-4 d-flex flex-column gap-3 mt-3" style="list-style: none; padding-left: 0; width:100%;">
@@ -1321,7 +1335,13 @@
           ev.preventDefault(); 
         }
       }, {passive: false});
-        
+      
+      
+      document.addEventListener('mousedown', function(e) {
+        if (e.target.closest('#no-select')) {
+          e.preventDefault();
+        }
+      });
 
       frappe.ready(() => {
         
@@ -1671,7 +1691,7 @@
     closerulebtn.addEventListener('click', function() {
       document.getElementById('instruction-popup').style.display="none";
     });
-  
+
     }
     // Function to show custom toast message
     function showCustomToast(message) {
