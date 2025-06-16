@@ -71,7 +71,34 @@ frappe.ui.form.on("Community Poll", {
             });
         }, 'Poll Actions');
 
+
+        // Reset button for reset Leaderboard, Poll vote and Total Views
+
+        frm.add_custom_button(__('Reset Poll'), () => {
+           frm.set_value('has_shown_qr', 0).then(() => {
+                frm.save();  
+            });
+
+
         
+            // call reset method
+            frappe.call({
+                method: "antpoll.antpoll.doctype.community_poll.community_poll.reset", 
+                args: {
+                    docname: frm.docname
+                },
+                callback: function(r) {
+                    if (r.message) {
+                        frappe.msgprint(__('Poll has been reset successfully.'));
+                    } else {
+                        frappe.msgprint(__('An error occurred while resetting the poll.'));
+                    }
+                }
+            });
+
+        }).css({'background-color':'black', 'color': '#FFFFFF'});
+
+
         // Style the button
         btn.css({
             'background-color': 'black',
@@ -94,23 +121,6 @@ frappe.ui.form.on("Community Poll", {
 frappe.ui.form.on('Question Items', {
     form_render(frm, cdt, cdn) {
         const d = locals[cdt][cdn];
-
-        // only proceed if there's a QR URL
-        if (d.qr) {
-            // build the full URL
-            const image_url = frappe.urllib.get_full_url(d.qr);
-
-            // inject the image into your qr_preview HTML field
-            const html = `
-                <div style="width:100px; text-align:center; margin-top:10px;">
-                    <img src="${image_url}" 
-                         style="width:100px; height:auto; 
-                                border:1px solid #ddd; padding:5px; 
-                                border-radius:6px;" />
-                </div>`;
-            // this is how you set it on the grid form
-            frm.cur_grid.grid_form.fields_dict.qr_preview.$wrapper.html(html);
-        }
 
         if (d.name && frm.doc.name) {
             // Call server method to get vote data

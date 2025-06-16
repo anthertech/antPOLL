@@ -527,6 +527,7 @@ def send_next_question_url(next_url):
 
 @frappe.whitelist()
 def  send_cur_question_url(cur_url,poll_id):
+    print("\n\n\n","cur qstn sended!!")
     frappe.publish_realtime('goto_cur_question_event', cur_url)
     frappe.db.set_value("Community Poll", poll_id, "has_shown_qr", True)
     return {"status": "success", "url": cur_url}
@@ -583,3 +584,30 @@ def ordinal(n):
     else:
         suffix = {1: ' st', 2: ' nd', 3: ' rd'}.get(n % 10, ' th')
     return f"{n}{suffix}"
+
+@frappe.whitelist()
+def reset(docname):
+    frappe.logger().info("\n\nreset method called!!!")
+    
+    doc = frappe.get_doc("Community Poll", docname)
+    question_ids = []
+    for question_row in doc.questions:
+        question_id = question_row.question 
+        question_ids.append(question_id)
+
+        question_row.qst_status = "Open"
+        question_row.total_view = 0
+        question_row.total_vote_count = 0
+        question_row.workflow_phase = "Pending"
+        question_row.is_shown_leaderboard = 0
+
+        
+        res = question_row.options_result
+        print("result summary table::")
+        print(res)
+        doc.save(ignore_permissions=True)
+        frappe.db.commit()
+
+    print("\n\n\n QSTN List:::\n",question_id)
+    
+    return "success"
