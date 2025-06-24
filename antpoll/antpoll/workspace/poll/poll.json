@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"Pk6qJn2Tua\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"NdN0NZrZbQ\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Poll System</span>\",\"col\":12}},{\"id\":\"wriAH-3Ou0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Create Poll\",\"col\":3}},{\"id\":\"o0EP3NHJiZ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Poll Questions\",\"col\":3}},{\"id\":\"658Zbi8rJR\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Poll Users\",\"col\":3}},{\"id\":\"INPxVIuliV\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Poll Settings\",\"col\":3}},{\"id\":\"FJ1LkEGiIJ\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"m-DGpebBMD\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Summary <br></b></span>\",\"col\":12}},{\"id\":\"S8LJx2PcN3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Result Summary\",\"col\":3}},{\"id\":\"xjiZBdVyDR\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Leaderboard\",\"col\":3}}]",
+ "content": "[{\"id\":\"Pk6qJn2Tua\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"NdN0NZrZbQ\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Poll System</span>\",\"col\":12}},{\"id\":\"wriAH-3Ou0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Poll\",\"col\":3}},{\"id\":\"o0EP3NHJiZ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Poll Questions\",\"col\":3}},{\"id\":\"658Zbi8rJR\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Poll Users\",\"col\":3}},{\"id\":\"INPxVIuliV\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Poll Settings\",\"col\":3}},{\"id\":\"TvJ3VLii6t\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Energy Point Rule\",\"col\":3}},{\"id\":\"FJ1LkEGiIJ\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"m-DGpebBMD\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Summary <br></b></span>\",\"col\":12}},{\"id\":\"S8LJx2PcN3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Result Summary\",\"col\":3}},{\"id\":\"xjiZBdVyDR\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Leaderboard\",\"col\":3}},{\"id\":\"cJa8LvXI2H\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Users\",\"col\":3}},{\"id\":\"mDES43gmv-\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Energy Point Log\",\"col\":3}},{\"id\":\"eiaZpwUb0n\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Energy Point Settings\",\"col\":3}}]",
  "creation": "2025-04-29 09:28:27.742372",
  "custom_blocks": [],
  "docstatus": 0,
@@ -13,7 +13,7 @@
  "is_hidden": 0,
  "label": "Poll",
  "links": [],
- "modified": "2025-05-20 13:23:10.451732",
+ "modified": "2025-06-24 15:41:39.144122",
  "modified_by": "Administrator",
  "module": "antPoll",
  "name": "Poll",
@@ -34,8 +34,8 @@
  "shortcuts": [
   {
    "color": "Red",
-   "doc_view": "New",
-   "label": "Create Poll",
+   "doc_view": "List",
+   "label": "Poll",
    "link_to": "Community Poll",
    "stats_filter": "[]",
    "type": "DocType"
@@ -48,11 +48,27 @@
    "type": "DocType"
   },
   {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "Energy Point Rule",
+   "link_to": "Energy Point Rule",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
    "color": "Grey",
    "doc_view": "List",
    "label": "Leaderboard",
    "link_to": "leaderboard",
    "type": "Page"
+  },
+  {
+   "color": "Orange",
+   "doc_view": "List",
+   "label": "Users",
+   "link_to": "Community Poll Users",
+   "stats_filter": "[]",
+   "type": "DocType"
   },
   {
    "color": "Orange",
@@ -63,11 +79,26 @@
    "type": "DocType"
   },
   {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Energy Point Log",
+   "link_to": "Energy Point Log",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
    "color": "Blue",
    "doc_view": "List",
    "label": "Poll Users",
    "link_to": "Community Poll Users",
    "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Energy Point Settings",
+   "link_to": "Energy Point Settings",
    "type": "DocType"
   },
   {

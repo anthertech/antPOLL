@@ -46,7 +46,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-21 15:47:27.084224",
+ "modified": "2025-06-24 17:46:51.071694",
  "modified_by": "Administrator",
  "module": "antPoll",
  "name": "Poll Question",
@@ -91,7 +91,9 @@
   }
  ],
  "row_format": "Dynamic",
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "question"
 }

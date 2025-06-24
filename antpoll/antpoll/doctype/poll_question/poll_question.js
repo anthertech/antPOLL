@@ -8,5 +8,9 @@ frappe.ui.form.on('Poll Question', {
             frm.set_df_property('options', 'hidden', 1);
 
         }
+    },
+    get_data: function (frm) {
+        frm.link_title = frm.doc.name;
+        frm.link_description = frm.doc.question;
     }
   });
