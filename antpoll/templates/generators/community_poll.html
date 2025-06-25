@@ -731,38 +731,36 @@
   -webkit-touch-callout: none; /* iOS Safari */
 }
 
-@keyframes bubblePopIn {
+@keyframes floatNameUp {
   0% {
+    transform: translateY(0);
     opacity: 0;
-    transform: scale(0.3) translateY(0);
   }
-  40% {
+  10% {
     opacity: 1;
-    transform: scale(1.2) translateY(-20px);
   }
   70% {
-    transform: scale(1) translateY(-40px);
+    opacity: 1;
   }
   100% {
+    transform: translateY(-80vh); /* Goes toward top */
     opacity: 0;
-    transform: scale(0.6) translateY(-80px);
   }
 }
 
 .name-bubble {
   position: absolute;
-  background: black;
-  color: #fff;
-  padding: 8px 15px;
-  border-radius: 25px;
-  font-weight: 450;
-  font-size: 17px;
-  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-  animation: bubblePopIn 2.5s ease-out forwards;
+  top: 85vh; /* Start a bit above bottom (adjust this if needed) */
+  left: 50%;
+  transform: translateX(-50%);
+  animation: floatNameUp 6s ease-out forwards;
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
   white-space: nowrap;
-  border: 1px solid #fff;
+  pointer-events: none;
 }
+
 
     </style>
   
@@ -826,13 +824,15 @@
     <button id="rules-button" class="instruction-btn" >INSTRUCTIONS</button>
     <button id="start-poll-button" class="next-btnn-start pollstartbtn">START</button>
   </div>
+
   <div id="reaction-container" style="
   position: fixed;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  left: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   z-index: 9999;"></div>
+
   {% endif %}
 
   {% if is_poll_admin !="True" %}
@@ -1538,37 +1538,36 @@
         
       frappe.realtime.on('view_count_updated', (data) => {
         const { question, poll_id, viewed_by_name } = data;
-    
+      
         frappe.call({
-            method: "antpoll.antpoll.doctype.community_poll.community_poll.get_total_views",
-            args: {
-                q_name: question,
-                poll_id: poll_id
-            },
-            callback: function(response) {
-                if (response.message !== undefined) {
-                    document.getElementById('total-view-count').innerText = "PLAYERS: " + response.message;
-                    document.getElementById('total-view-count-qst').innerText = "PLAYERS: " + response.message;
-    
-                    // Fancy animated name bubble
-                    const bubble = document.createElement('div');
-                    bubble.className = 'name-bubble';
-                    bubble.innerText = viewed_by_name;
-    
-                    // Random left offset from center
-                    const offsetX = (Math.random() * 100 - 50) + 'px';
-    
-                    // Optional: Assign random pastel gradient color
-                   
-    
-                    // Append and remove after animation
-                    const container = document.getElementById('reaction-container');
-                    container.appendChild(bubble);
-                    setTimeout(() => bubble.remove(), 2500);
-                }
+          method: "antpoll.antpoll.doctype.community_poll.community_poll.get_total_views",
+          args: {
+            q_name: question,
+            poll_id: poll_id
+          },
+          callback: function(response) {
+            if (response.message !== undefined) {
+              document.getElementById('total-view-count').innerText = "PLAYERS: " + response.message;
+              document.getElementById('total-view-count-qst').innerText = "PLAYERS: " + response.message;
+      
+              // Create floating name div
+              const bubble = document.createElement('div');
+              bubble.className = 'name-bubble';
+              bubble.innerText = viewed_by_name;
+      
+              // Optional: random horizontal offset near center
+              const offsetX = (Math.random() * 100 - 50); // ±50px
+              bubble.style.left = `calc(50% + ${offsetX}px)`;
+      
+              // Append and auto-remove
+              const container = document.getElementById('reaction-container');
+              container.appendChild(bubble);
+              setTimeout(() => bubble.remove(), 6000); // match animation duration
             }
+          }
         });
-    });
+      });
+      
 
         // Admin-only section
         if (is_poll_admin == "True") { 
