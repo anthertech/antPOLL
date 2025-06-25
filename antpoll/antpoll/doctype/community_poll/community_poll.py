@@ -536,32 +536,6 @@ def track_poll_question_view(question_name, poll_id):
     }
 
 
-# @frappe.whitelist()
-# def track_poll_question_view(question_name,poll_id):
-#     user = frappe.session.user
-#     poll_doc = frappe.get_doc("Community Poll",poll_id)
-#     if poll_doc and user:
-#         if user != "Guest" and poll_doc.owner != user:
-#             if not frappe.db.exists("View Log", {"reference_doctype":"Poll Question","reference_name": question_name,"custom_poll_id":poll_id,"viewed_by": user}):
-#                 doc = frappe.new_doc("View Log")
-#                 doc.reference_doctype = "Poll Question"
-#                 doc.reference_name = question_name
-#                 doc.custom_poll_id = poll_id
-#                 doc.viewed_by = user
-#                 doc.save(ignore_permissions=True)
-#                 frappe.db.commit()
-
-#                 for question in poll_doc.questions:
-#                     if question.question == question_name:
-#                         new_view = (question.total_view or 0) + 1
-#                         break
-                    
-#                 frappe.db.set_value("Question Items",question.name,"total_view",new_view)
-#                 frappe.publish_realtime("view_count_updated",message={"question": question_name, "poll_id": poll_id})
-#                 print("called")
-#                 return {"question": question_name, "poll_id": poll_id}
-
-
 @frappe.whitelist()
 def get_option_vote_data(poll_id, question_name):
     # Get total votes for this poll and question
