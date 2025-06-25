@@ -7,6 +7,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "poll_title",
   "route",
   "column_break_wcjk",
   "status",
@@ -85,12 +86,17 @@
    "fieldname": "has_shown_qr",
    "fieldtype": "Check",
    "label": "Has Shown QR"
+  },
+  {
+   "fieldname": "poll_title",
+   "fieldtype": "Data",
+   "label": "Title"
   }
  ],
  "has_web_view": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-21 16:24:06.187594",
+ "modified": "2025-06-24 18:03:53.903305",
  "modified_by": "Administrator",
  "module": "antPoll",
  "name": "Community Poll",

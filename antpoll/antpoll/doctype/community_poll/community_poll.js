@@ -78,8 +78,6 @@ frappe.ui.form.on("Community Poll", {
            frm.set_value('has_shown_qr', 0).then(() => {
                 frm.save();  
             });
-
-
         
             // call reset method
             frappe.call({
@@ -98,7 +96,6 @@ frappe.ui.form.on("Community Poll", {
 
         }).css({'background-color':'black', 'color': '#FFFFFF'});
 
-
         // Style the button
         btn.css({
             'background-color': 'black',
@@ -106,7 +103,6 @@ frappe.ui.form.on("Community Poll", {
             'border-color': 'white'
         });
 
-       
     },
     validate: function(frm) {
         if (frm.doc.status == "Open" || frm.doc.status == "Reopen") {
@@ -124,14 +120,10 @@ frappe.ui.form.on("Community Poll", {
             };
         };
     }
-    
-
 });
 
 
-
 frappe.ui.form.on('Question Items', {
-
     form_render(frm, cdt, cdn) {
         const d = locals[cdt][cdn];
 
