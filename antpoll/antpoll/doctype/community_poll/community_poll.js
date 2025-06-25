@@ -122,14 +122,6 @@ frappe.ui.form.on("Community Poll", {
         };
     }
     
-
-            return {
-                filters: [
-                    ['Poll Question', 'name', 'not in', existing_questions]
-                ]
-            };
-        };
-    }
 });
 
 
