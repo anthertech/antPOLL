@@ -871,7 +871,7 @@
     <!-- Question and Progress Bars -->
     <div class="dashboard-2col-qstn">
     {% if is_poll_admin == "True"  %}
-    <h4 style="color:black;" id="total-view-count-qst">PLAYERS: 0</h4>
+    <h4 style="color:black;" id="total-view-count-qst">PLAYERS: {{viewss}}</h4>
     {% else %}
     <br><br><br>
     {% endif %}
@@ -1358,7 +1358,11 @@
       const goto_leaderboard = document.getElementById("goto_leaderboard");
       const testbc = document.getElementById("testbc");
       const next_question_name = "{{next_question_name}}";
+
       const workflow_phase = "{{workflow_phase}}"
+      const questionEndTime = "{{end_time}}"
+      const questionName = "{{ current_question.name }}";
+
       const playername = document.getElementById("player-name");
 
 
@@ -1659,6 +1663,38 @@
               });
             });
           }
+
+          if (workflow_phase === "Has Started" && questionEndTime) {
+
+            console.log("neeeeeeeeeeeeeeeeeeeeeeeeeeeewwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
+            const endTime = new Date(questionEndTime).getTime();
+            const now = new Date().getTime();
+            if (now > endTime) {
+
+              console.log(now,"now and nd time is",endTime)
+                // End time passed — call backend to mark question as timed out
+                frappe.call({
+                    method: "antpoll.antpoll.doctype.community_poll.community_poll.qstn_timeout_update",  // replace with your actual path
+                    args: {
+                        poll_id: pollId,
+                        qst_id: questionName
+                    },
+                    callback: function (r) {
+                        if (r.message?.status === "successfully updated time out") {
+                            console.log("Question timed out. Backend updated.");
+                            location.reload();  // Optional: reload to reflect changes
+                        } else {
+                            console.log("No update required.");
+                        }
+                    }
+                });
+            } else {
+                console.log("Question still active. Not yet timed out.");
+            }
+        } else {
+            console.log("Question not in active phase or no end time defined.");
+        }
+
     }
   });
   

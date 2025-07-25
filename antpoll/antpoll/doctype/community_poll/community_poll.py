@@ -8,8 +8,7 @@ import qrcode
 import os
 from datetime import datetime, date
 from collections import defaultdict
-from frappe.utils import getdate
-
+from frappe.utils import getdate,now_datetime, add_to_date
 
 import urllib.parse
 from urllib.parse import quote
@@ -75,10 +74,15 @@ class CommunityPoll(WebsiteGenerator):
                 context.qstn_status = qrs.qst_status
                 context.viewss = qrs.total_view
                 context.workflow_phase = qrs.workflow_phase
+                context.start_time = qrs.start_time
+                context.end_time = qrs.end_time
                 context.is_shown_leaderboard = int(qrs.is_shown_leaderboard)
         
                 print("workflow phase")
                 print(qrs.workflow_phase)
+                print("\n\n\nQSTN VIEW-----")
+                print(qrs.total_view)
+                print("\n\n\n\n")
 
         context.options = current_question.options
         # context.show_result = self.show_voting_result
@@ -359,33 +363,10 @@ def get_custom_leaderboard(community_poll, date_range=None, limit=20):
     print("-----------------------------\n\n")
     return [{"name": user, "value": points} for user, points in sorted_data]
 
+##################### View count update realtime method #############################3
+
 @frappe.whitelist(allow_guest=True)
 def get_total_views(q_name, poll_id):
-    # print("\n\nView count method called\n\n")
-
-    # current_user = frappe.session.user
-    # total_views = 0
-    # user_name = None
-
-    # # Get the poll document
-    # poll_doc = frappe.get_doc("Community Poll", poll_id)
-
-    # # Get total view count from the question row
-    # for qrs in poll_doc.questions:
-    #     if qrs.question == q_name:
-    #         total_views = qrs.total_view or 0
-    #         break
-
-    #     print("\n\n\nexist!!!")
-
-    #     print("Returning total_views:", total_views)
-    #     print("Returning current viewer:", user_name)
-
-    # return {
-    #     "total_views": total_views,
-    #     "current_user_name": user_name
-    # }
-
     print("\n\n\nview count method called\n\n")
     poll_doc = frappe.get_doc("Community Poll", poll_id)
     for qrs in poll_doc.questions:
@@ -393,6 +374,7 @@ def get_total_views(q_name, poll_id):
             total_views = qrs.total_view
             print(":::::",total_views,"::::::::::")
             return total_views if total_views else 0
+
 
 @frappe.whitelist()
 def has_user_voted(poll_id, qst_id, user):
@@ -475,65 +457,135 @@ def question_result_show(poll_id,qst_id):
     frappe.publish_realtime('result_publish_event', poll_id)
     return {"message": "success"}
 
+##############  Add total view to poll question table by view log creation  #################
 
 @frappe.whitelist()
 def track_poll_question_view(question_name, poll_id):
     user = frappe.session.user
-    poll_doc = frappe.get_doc("Community Poll", poll_id)
     user_fullname = None
 
-    if poll_doc and user:
-        if user != "Guest" and poll_doc.owner != user:
-            # Check if already exists
-            if not frappe.db.exists("View Log", {
-                "reference_doctype": "Poll Question",
-                "reference_name": question_name,
-                "custom_poll_id": poll_id,
-                "viewed_by": user
-            }):
-                # Create View Log
-                doc = frappe.new_doc("View Log")
-                doc.reference_doctype = "Poll Question"
-                doc.reference_name = question_name
-                doc.custom_poll_id = poll_id
-                doc.viewed_by = user
-                doc.save(ignore_permissions=True)
-                frappe.db.commit()
+    if not user or user == "Guest":
+        return {
+            "question": question_name,
+            "poll_id": poll_id,
+            "viewed_by_name": None
+        }
+    poll_doc = frappe.get_doc("Community Poll", poll_id)
 
-                # Increment total_view
-                for question in poll_doc.questions:
-                    if question.question == question_name:
-                        new_view = (question.total_view or 0) + 1
-                        frappe.db.set_value("Question Items", question.name, "total_view", new_view)
-                        break
+    # Skip if user is poll owner
+    if poll_doc.owner == user:
+        return {
+            "question": question_name,
+            "poll_id": poll_id,
+            "viewed_by_name": None
+        }
 
-                # Get user's full name
-                try:
-                    user_doc = frappe.get_doc("User", user)
-                    user_fullname = user_doc.full_name or user
-                except Exception as e:
-                    frappe.log_error(f"Error getting full name: {e}")
-                    user_fullname = user  # fallback
+    # Skip if already viewed
+    if frappe.db.exists("View Log", {
+        "reference_doctype": "Poll Question",
+        "reference_name": question_name,
+        "custom_poll_id": poll_id,
+        "viewed_by": user
+    }):
+        return {
+            "question": question_name,
+            "poll_id": poll_id,
+            "viewed_by_name": None
+        }
+    # Create View Log
+    doc = frappe.new_doc("View Log")
+    doc.reference_doctype = "Poll Question"
+    doc.reference_name = question_name
+    doc.custom_poll_id = poll_id
+    doc.viewed_by = user
+    doc.save(ignore_permissions=True)
 
-                # Broadcast via realtime event (optional)
-                frappe.publish_realtime("view_count_updated", message={
-                    "question": question_name,
-                    "poll_id": poll_id,
-                    "viewed_by_name":user_fullname
-                })
+    # Count total views for this question in this poll
+    total_views = frappe.db.count("View Log", {
+        "reference_doctype": "Poll Question",
+        "reference_name": question_name,
+        "custom_poll_id": poll_id
+    })
 
-                print("called")
-                return {
-                    "question": question_name,
-                    "poll_id": poll_id,
-                    "viewed_by_name": user_fullname
-                }
+    # Update total_view in the child table
+    for question in poll_doc.questions:
+        if question.question == question_name:
+            frappe.db.set_value("Question Items", question.name, "total_view", total_views)
+            break
+
+    # Get user's full name
+    try:
+        user_doc = frappe.get_doc("User", user)
+        user_fullname = user_doc.full_name or user
+    except Exception as e:
+        frappe.log_error(f"Error getting full name: {e}")
+        user_fullname = user
+
+    # Publish realtime event (optional)
+    frappe.publish_realtime("view_count_updated", message={
+        "question": question_name,
+        "poll_id": poll_id,
+        "viewed_by_name": user_fullname
+    })
+
+    frappe.db.commit()
 
     return {
         "question": question_name,
         "poll_id": poll_id,
-        "viewed_by_name": None
+        "viewed_by_name": user_fullname
     }
+
+@frappe.whitelist()
+def reset(docname):
+    # frappe.logger().info("\n\nreset method called!!!")
+
+    # # Load the Community Poll
+    # doc = frappe.get_doc("Community Poll", docname)
+    # poll_id = doc.name
+
+    # # STEP 1: Get all Poll Vote names for this poll
+    # poll_vote_ids = frappe.get_all('Poll Vote', filters={'poll': poll_id}, pluck='name')
+
+    # for vote_id in poll_vote_ids:
+    #     # STEP 2: Revert Energy Point Logs linked to this vote
+    #     energy_logs = frappe.get_all('Energy Point Log', filters={
+    #         'reference_doctype': 'Poll Vote',
+    #         'reference_name': vote_id,
+    #         'reverted': 0  # only not-yet-reverted logs
+    #     }, pluck='name')
+
+    #     for log_id in energy_logs:
+    #         try:
+    #             log = frappe.get_doc("Energy Point Log", log_id)
+    #             log.revert("Poll reset")
+    #             frappe.logger().info(f"Reverted Energy Point Log: {log_id}")
+    #         except Exception as e:
+    #             frappe.logger().error(f"Failed to revert Energy Point Log {log_id}: {e}")
+
+    #     # STEP 3: Delete Poll Vote entry
+    #     try:
+    #         frappe.delete_doc('Poll Vote', vote_id, force=1)
+    #         frappe.logger().info(f"Deleted Poll Vote: {vote_id}")
+    #     except Exception as e:
+    #         frappe.logger().error(f"Failed to delete Poll Vote {vote_id}: {e}")
+
+    # # STEP 4: Reset the child table rows
+    # for question_row in doc.questions:
+    #     question_row.qst_status = "Open"
+    #     question_row.total_view = 0
+    #     question_row.total_vote_count = 0
+    #     question_row.workflow_phase = "Pending"
+    #     question_row.is_shown_leaderboard = 0
+
+    # # STEP 5: Save and commit
+    # doc.save(ignore_permissions=True)
+    # frappe.db.commit()
+
+    # frappe.msgprint("Poll reset complete: votes removed and energy points reverted.")
+    return "success"
+
+
 
 
 @frappe.whitelist()
@@ -569,9 +621,6 @@ def get_option_vote_data(poll_id, question_name):
 
     return result
 
-
-
-
 @frappe.whitelist()
 def send_custom_notification(message):
     
@@ -602,8 +651,15 @@ def start_timer_forqstn(poll_id,qst_id):
             print("qstn find!!!\n\n")
             if q.workflow_phase == "Pending":
                 q.workflow_phase = "Has Started"
+                q.start_time = now_datetime()
+                duration = frappe.db.get_single_value("Poll Settings", "question_duration") or 15
+                q.end_time = add_to_date(q.start_time, seconds=duration)
+                print("\n\n\n\n\nneewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
                 poll.save(ignore_permissions=True)
                 frappe.db.commit()
+                print(q.start_time,"----START END----",q.end_time)
+                print("\n\n\n")
+                
                 frappe.publish_realtime('start_qstn_timer', qst_id)
                 return {"status": "updated", "question": q.question}
 
@@ -645,29 +701,12 @@ def ordinal(n):
         suffix = {1: ' st', 2: ' nd', 3: ' rd'}.get(n % 10, ' th')
     return f"{n}{suffix}"
 
+###########  for assign view log count to poll questions total view ##########
+
 @frappe.whitelist()
-def reset(docname):
-    frappe.logger().info("\n\nreset method called!!!")
-    
-    doc = frappe.get_doc("Community Poll", docname)
-    question_ids = []
-    for question_row in doc.questions:
-        question_id = question_row.question 
-        question_ids.append(question_id)
-
-        question_row.qst_status = "Open"
-        question_row.total_view = 0
-        question_row.total_vote_count = 0
-        question_row.workflow_phase = "Pending"
-        question_row.is_shown_leaderboard = 0
-
-        
-        res = question_row.options_result
-        print("result summary table::")
-        print(res)
-        doc.save(ignore_permissions=True)
-        frappe.db.commit()
-
-    print("\n\n\n QSTN List:::\n",question_id)
-    
-    return "success"
+def get_view_count(poll_id,question_id):
+    return frappe.db.count("View Log", {
+        "reference_doctype": "Poll Question",
+        "reference_name": question_id,
+        "custom_poll_id": poll_id
+    })

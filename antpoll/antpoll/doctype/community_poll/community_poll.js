@@ -7,23 +7,6 @@ frappe.ui.form.on("Community Poll", {
   
     refresh: function(frm) {
 
-        // if (frm.doc.quest_qr && frm.fields_dict.qr_preview) {
-        //     // build the full URL for the image
-        //     const image_url = frappe.urllib.get_full_url(frm.doc.quest_qr);
-
-        //     // construct the HTML for the image preview
-        //     const html = `
-        //         <div style="width:100%; text-align:center; margin-top:10px;">
-        //             <img src="${image_url}" 
-        //                  style="width:300px; height:auto; 
-        //                         border:1px solid #ddd; padding:5px; 
-        //                         border-radius:6px;" />
-        //         </div>`;
-
-        //     // set the HTML content of the 'qr_preview' field
-        //     frm.fields_dict.qr_preview.$wrapper.html(html);
-        // }
-       
         // Check if the user has the role "Participant"
         if (!frappe.user.has_role('Poll Master') && frappe.user.has_role("Participant")) {
 
@@ -73,26 +56,24 @@ frappe.ui.form.on("Community Poll", {
 
 
         // Reset button for reset Leaderboard, Poll vote and Total Views
-
         frm.add_custom_button(__('Reset Poll'), () => {
-           frm.set_value('has_shown_qr', 0).then(() => {
-                frm.save();  
-            });
-        
+            frm.set_value('has_shown_qr', 0);
+            
             // call reset method
-            frappe.call({
-                method: "antpoll.antpoll.doctype.community_poll.community_poll.reset", 
-                args: {
-                    docname: frm.docname
-                },
-                callback: function(r) {
-                    if (r.message) {
-                        frappe.msgprint(__('Poll has been reset successfully.'));
-                    } else {
-                        frappe.msgprint(__('An error occurred while resetting the poll.'));
-                    }
-                }
-            });
+            // frappe.call({
+            //     method: "antpoll.antpoll.doctype.community_poll.community_poll.reset", 
+            //     args: {
+            //         docname: frm.docname
+            //     },
+            //     callback: function(r) {
+            //         if (r.message) {
+            //             frappe.msgprint(__('Poll has been reset successfully.'));
+            //         } else {
+            //             frappe.msgprint(__('An error occurred while resetting the poll.'));
+            //         }
+            //     }
+            // });
+            
 
         }).css({'background-color':'black', 'color': '#FFFFFF'});
 
@@ -102,7 +83,6 @@ frappe.ui.form.on("Community Poll", {
             'color': '#FFFFFF',
             'border-color': 'white'
         });
-
     },
     validate: function(frm) {
         if (frm.doc.status == "Open" || frm.doc.status == "Reopen") {
@@ -112,7 +92,6 @@ frappe.ui.form.on("Community Poll", {
     onload: function(frm) {
         frm.fields_dict['questions'].grid.get_field('question').get_query = function (doc, cdt, cdn) {
             const existing_questions = (frm.doc.questions || []).map(item => item.question).filter(q => q);
-
             return {
                 filters: [
                     ['Poll Question', 'name', 'not in', existing_questions]
@@ -120,8 +99,30 @@ frappe.ui.form.on("Community Poll", {
                 fields: ['name', 'question'],
             };
         };
+
+        if (frm.doc.questions && frm.doc.questions.length > 0) {
+            // Loop through each row in the questions table
+            frm.doc.questions.forEach(row => {
+                if (row.question) {
+                    // Call server-side method to get view count
+                    frappe.call({
+                        method: "antpoll.antpoll.doctype.community_poll.community_poll.get_view_count",  // Replace with your method path
+                        args: {
+                            poll_id: frm.doc.name,
+                            question_id: row.question
+                        },
+                        callback: function(r) {
+                            if (r.message !== undefined) {
+                                // Set the total_view field with returned count
+                                frappe.model.set_value(row.doctype, row.name, "total_view", r.message);
+                            }
+                            frm.save();
+                        }
+                    });
+                }
+            });
+        }
     }
-    
 });
 
 
