@@ -1,17 +1,12 @@
 # Copyright (c) 2025, Anther Technologies Pvt Ltd and contributors
 # For license information, please see license.txt
 
-
 import frappe
 from frappe.website.website_generator import WebsiteGenerator 
-import qrcode  
-import os
 from datetime import datetime, date
 from collections import defaultdict
 from frappe.utils import getdate,now_datetime, add_to_date
-
 import urllib.parse
-from urllib.parse import quote
 
 class CommunityPoll(WebsiteGenerator):
 
@@ -33,8 +28,6 @@ class CommunityPoll(WebsiteGenerator):
 
         context.pollqr = self.quest_qr
         context.has_qr_shown = self.has_shown_qr
-
-        # context.leaderboard = self.show_leaderboard
 
         settings = frappe.get_doc("Poll Settings", "Poll Settings") 
 
@@ -77,15 +70,8 @@ class CommunityPoll(WebsiteGenerator):
                 context.start_time = qrs.start_time
                 context.end_time = qrs.end_time
                 context.is_shown_leaderboard = int(qrs.is_shown_leaderboard)
-        
-                print("workflow phase")
-                print(qrs.workflow_phase)
-                print("\n\n\nQSTN VIEW-----")
-                print(qrs.total_view)
-                print("\n\n\n\n")
 
         context.options = current_question.options
-        # context.show_result = self.show_voting_result
 
         # 1. Get vote logs for this question in this poll
         votes = frappe.get_all("Poll Vote", 
@@ -120,8 +106,6 @@ class CommunityPoll(WebsiteGenerator):
 
         # 5. Send to frontend
         context.optionsss = options_list
-
-        print(options_list)
 
         for op in current_question.options:
             if op.is_correct == 1:
@@ -161,7 +145,6 @@ class CommunityPoll(WebsiteGenerator):
         context.user = user
         if "Poll Master" in roles:
             context.is_poll_admin = "True"
-            print("yessss")
 
         #     # Get current user's vote
         user_vote = frappe.get_all("Poll Vote",
@@ -263,80 +246,22 @@ class CommunityPoll(WebsiteGenerator):
         if self.name:
             self.route = self.name
 
-    
-    # def generate_qr_codes(self):
-    #     if not self.get("questions"):
-    #         return
-
-    #     first_question_text = self.questions[0].question.strip()
-
-    #     # URL encode the question text
-    #     question_slug = urllib.parse.quote(first_question_text)
-    #     url_path = f"/{self.name}?quest={question_slug}"
-
-    #     # Generate QR code
-    #     qr = qrcode.make(frappe.utils.get_url() + url_path) 
-    #     file_path = f"/tmp/{self.name}_qr.png"
-    #     qr.save(file_path)
-
-    #     # Save to Attach field
-    #     with open(file_path, "rb") as f:
-    #         saved_file = save_file(f"{self.name}-QR.png", f.read(), self.doctype, self.name, is_private=False)
-    #         self.qr_code = saved_file.file_url
-    #         frappe.db.set_value(self.doctype, self.name, "quest_qr", saved_file.file_url)
-
-    # def generate_qr_codes(self):
-    #     if not self.get("questions"):
-    #         return
-        
-    #     base_url = frappe.utils.get_url()
-    #     tmp_dir  = frappe.get_site_path("private", "qr_temp")
-    #     os.makedirs(tmp_dir, exist_ok=True)
-
-    #     for idx, q in enumerate(self.questions):
-    #         # Prepare the URL
-    #         question_text = q.question.strip()
-    #         slug          = urllib.parse.quote(question_text)
-    #         url_path      = f"/{self.name}?quest={slug}"
-    #         full_url      = base_url + url_path
-
-    #         # Check QR image
-    #         if q.get("qr"):
-    #             continue
-
-    #         # Gnerate QR
-    #         qr_img    = qrcode.make(full_url)
-    #         filename  = f"{self.name}_Q{idx+1}.png"
-    #         file_path = os.path.join(tmp_dir, filename)
-    #         qr_img.save(file_path)
-
-    #         # Read and save via positional args
-    #         with open(file_path, "rb") as f:
-    #             filedata = f.read()
-    #             saved = save_file(
-    #                 filename,        # fname
-    #                 filedata,        # content
-    #                 self.doctype,    # dt
-    #                 self.name,       # dn
-    #                 None,            # folder
-    #                 False            # is_private
-    #             )
-
-    #         # Store the QR code URL in the child row
-    #         q.db_set("qr", saved.file_url, update_modified=False)
-
-    #     # Update the parent’s modified timestamp so the parent doc registers a change
-    #     frappe.db.set_value(self.doctype, self.name, "modified", frappe.utils.now())
-        
+        # if self.questions:
+        #     last_row = self.questions[-1]
+        #     if (
+        #         last_row.qst_status == "Closed"
+        #         and last_row.is_shown_leaderboard
+        #     ):
+        #         if self.status != "Closed":
+        #             self.status = "Closed"
+        #         frappe.db.commit()
 
 @frappe.whitelist(allow_guest=True)
 def get_custom_leaderboard(community_poll, date_range=None, limit=20):
-    print("\n\n\nleaderboard point api called!!!!\n")
     if date_range:
         from_date, to_date = [getdate(d) for d in frappe.parse_json(date_range)]
     else:
         from_date = to_date = getdate()
-
     # Get relevant Poll Vote names
     poll_votes = frappe.get_all(
         "Poll Vote",
@@ -356,35 +281,29 @@ def get_custom_leaderboard(community_poll, date_range=None, limit=20):
     user_points = defaultdict(int)
     for log in logs:
         user_points[log.user] += log.points
-
     # Sort and limit
     sorted_data = sorted(user_points.items(), key=lambda x: x[1], reverse=True)[:int(limit)]
-    print("sorted data:::\n",sorted_data)
-    print("-----------------------------\n\n")
     return [{"name": user, "value": points} for user, points in sorted_data]
 
 ##################### View count update realtime method #############################3
 
 @frappe.whitelist(allow_guest=True)
 def get_total_views(q_name, poll_id):
-    print("\n\n\nview count method called\n\n")
     poll_doc = frappe.get_doc("Community Poll", poll_id)
     for qrs in poll_doc.questions:
         if qrs.question == q_name:
             total_views = qrs.total_view
-            print(":::::",total_views,"::::::::::")
             return total_views if total_views else 0
 
 
 @frappe.whitelist()
 def has_user_voted(poll_id, qst_id, user):
-    print("\n\n\n, checking user is voted or not::\n")
+   
     vote = frappe.get_value("Poll Vote", {
         "poll": poll_id,
         "quest_id": qst_id,
         "user": user
     }, "name")
-    print(bool(vote),"\n\n")
     return {"has_voted": bool(vote)}
 
 
@@ -447,10 +366,8 @@ def cast_vote(poll_id, qst_id, option_name):
 def question_result_show(poll_id,qst_id):
    
     poll = frappe.get_doc("Community Poll", poll_id)
-    print(poll)
     for i in poll.questions:
         if i.question == qst_id:
-            print(qst_id)
             i.qst_status = "Closed"
             i.save()
 
@@ -536,57 +453,6 @@ def track_poll_question_view(question_name, poll_id):
         "viewed_by_name": user_fullname
     }
 
-@frappe.whitelist()
-def reset(docname):
-    # frappe.logger().info("\n\nreset method called!!!")
-
-    # # Load the Community Poll
-    # doc = frappe.get_doc("Community Poll", docname)
-    # poll_id = doc.name
-
-    # # STEP 1: Get all Poll Vote names for this poll
-    # poll_vote_ids = frappe.get_all('Poll Vote', filters={'poll': poll_id}, pluck='name')
-
-    # for vote_id in poll_vote_ids:
-    #     # STEP 2: Revert Energy Point Logs linked to this vote
-    #     energy_logs = frappe.get_all('Energy Point Log', filters={
-    #         'reference_doctype': 'Poll Vote',
-    #         'reference_name': vote_id,
-    #         'reverted': 0  # only not-yet-reverted logs
-    #     }, pluck='name')
-
-    #     for log_id in energy_logs:
-    #         try:
-    #             log = frappe.get_doc("Energy Point Log", log_id)
-    #             log.revert("Poll reset")
-    #             frappe.logger().info(f"Reverted Energy Point Log: {log_id}")
-    #         except Exception as e:
-    #             frappe.logger().error(f"Failed to revert Energy Point Log {log_id}: {e}")
-
-    #     # STEP 3: Delete Poll Vote entry
-    #     try:
-    #         frappe.delete_doc('Poll Vote', vote_id, force=1)
-    #         frappe.logger().info(f"Deleted Poll Vote: {vote_id}")
-    #     except Exception as e:
-    #         frappe.logger().error(f"Failed to delete Poll Vote {vote_id}: {e}")
-
-    # # STEP 4: Reset the child table rows
-    # for question_row in doc.questions:
-    #     question_row.qst_status = "Open"
-    #     question_row.total_view = 0
-    #     question_row.total_vote_count = 0
-    #     question_row.workflow_phase = "Pending"
-    #     question_row.is_shown_leaderboard = 0
-
-    # # STEP 5: Save and commit
-    # doc.save(ignore_permissions=True)
-    # frappe.db.commit()
-
-    # frappe.msgprint("Poll reset complete: votes removed and energy points reverted.")
-    return "success"
-
-
-
 
 @frappe.whitelist()
 def get_option_vote_data(poll_id, question_name):
@@ -636,7 +502,6 @@ def send_next_question_url(next_url):
 
 @frappe.whitelist()
 def  send_cur_question_url(cur_url,poll_id):
-    print("\n\n\n","cur qstn sended!!")
     frappe.publish_realtime('goto_cur_question_event', cur_url)
     frappe.db.set_value("Community Poll", poll_id, "has_shown_qr", True)
     return {"status": "success", "url": cur_url}
@@ -648,18 +513,14 @@ def start_timer_forqstn(poll_id,qst_id):
     qst_id = qst_id
     poll = frappe.get_doc("Community Poll", poll_id)
     for q in poll.questions:
-            print("qstn find!!!\n\n")
             if q.workflow_phase == "Pending":
                 q.workflow_phase = "Has Started"
                 q.start_time = now_datetime()
                 duration = frappe.db.get_single_value("Poll Settings", "question_duration") or 15
                 q.end_time = add_to_date(q.start_time, seconds=duration)
-                print("\n\n\n\n\nneewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
                 poll.save(ignore_permissions=True)
                 frappe.db.commit()
-                print(q.start_time,"----START END----",q.end_time)
-                print("\n\n\n")
-                
+     
                 frappe.publish_realtime('start_qstn_timer', qst_id)
                 return {"status": "updated", "question": q.question}
 
@@ -667,7 +528,6 @@ def start_timer_forqstn(poll_id,qst_id):
 ########### qstn status updated after qstn timeout ###########
 @frappe.whitelist()
 def qstn_timeout_update(poll_id,qst_id):
-    print("\n\n TIME OUT METHOD CALLED !!!!")
     poll = frappe.get_doc("Community Poll", poll_id)
     for i in poll.questions:
         if i.question == qst_id:
@@ -710,3 +570,54 @@ def get_view_count(poll_id,question_id):
         "reference_name": question_id,
         "custom_poll_id": poll_id
     })
+
+@frappe.whitelist()
+def reset(docname):
+    print("\n\nreset method called!!!")
+    doc = frappe.get_doc("Community Poll", docname)
+    poll_id = doc.name
+    doc.has_shown_qr = 0
+    doc.status = "Open"
+
+    poll_vote_ids = frappe.get_all('Poll Vote', filters={'poll': poll_id}, pluck='name')
+    for vote_id in poll_vote_ids:
+        # suppress energy point rule before deletion
+        try:
+            frappe.db.set_value("Poll Vote", vote_id, "skip_energy_point_rule", 1)
+        except Exception as e:
+            print(f"Failed to set skip_energy_point_rule for {vote_id}: {e}")
+
+        energy_logs = frappe.get_all('Energy Point Log', filters={
+            'reference_doctype': 'Poll Vote',
+            'reference_name': vote_id,
+            'reverted': 0  # only not-yet-reverted logs
+        }, pluck='name')
+        for log_id in energy_logs:
+            try:
+                log = frappe.get_doc("Energy Point Log", log_id)
+                log.revert("Poll Reset")
+            except Exception as e:
+                print(f"Failed to revert Energy Point Log {log_id}: {e}")
+        try:
+            frappe.delete_doc('Poll Vote', vote_id, force=1)
+        except Exception as e:
+            print(f"Failed to delete Poll Vote {vote_id}: {e}")
+    frappe.db.commit()
+    count = frappe.db.count("View Log", filters={"custom_poll_id": poll_id})
+    if count == 0:
+        pass
+    else:
+        print(f"Deleting {count} view log(s) for poll {poll_id}")
+
+    frappe.db.sql("DELETE FROM `tabView Log` WHERE custom_poll_id = %s", (poll_id,))
+    frappe.db.commit()
+    for question_row in doc.questions:
+        question_row.qst_status = "Open"
+        question_row.total_vote_count = 0
+        question_row.total_view = 0
+        question_row.workflow_phase = "Pending"
+        question_row.is_shown_leaderboard = 0
+    # Save and commit the Community Poll
+    doc.save(ignore_permissions=True)
+    frappe.db.commit()
+    return "success"

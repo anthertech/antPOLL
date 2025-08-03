@@ -13,7 +13,9 @@
   "option",
   "is_correct",
   "is_first",
-  "vote_time"
+  "vote_time",
+  "section_break_yerx",
+  "skip_energy_point_rule"
  ],
  "fields": [
   {
@@ -60,11 +62,22 @@
    "fieldname": "is_first",
    "fieldtype": "Check",
    "label": "Is First"
+  },
+  {
+   "fieldname": "section_break_yerx",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "skip_energy_point_rule",
+   "fieldtype": "Check",
+   "label": "Skip Energy Point Rule",
+   "read_only_depends_on": "eval:doc.skip_energy_point_rule"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-16 12:43:16.249158",
+ "modified": "2025-08-02 09:46:07.986596",
  "modified_by": "Administrator",
  "module": "antPoll",
  "name": "Poll Vote",
