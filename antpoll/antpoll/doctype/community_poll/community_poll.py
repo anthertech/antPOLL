@@ -41,6 +41,8 @@ class CommunityPoll(WebsiteGenerator):
 
         poll_start_seconds = int(poll_start_duration.total_seconds())
         context.poll_start_seconds = poll_start_seconds
+
+        print("\n\n\n\n\n poll_start_seconds",poll_start_seconds,"\n\n\n\n\n\n")
             
         # questions = self.questions
         questions = self.questions or []
@@ -70,6 +72,7 @@ class CommunityPoll(WebsiteGenerator):
                 context.start_time = qrs.start_time
                 context.end_time = qrs.end_time
                 context.is_shown_leaderboard = int(qrs.is_shown_leaderboard)
+                context.index_no = qrs.idx
 
         context.options = current_question.options
 
