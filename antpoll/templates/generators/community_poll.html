@@ -881,7 +881,7 @@
   <!-- Existing Question Card -->
     <div class="card card-qstn" id="card-qstn"> 
       <h4 id="message-box"></h4>
-      <div class="title user-select-none no-touch-callout" id="no-select" style="margin-bottom: 30px;">Q: {{ current_question.question }} </div>
+      <div class="title user-select-none no-touch-callout" id="no-select" style="margin-bottom: 30px;"><span>Q {{index_no }}: </span>{{ current_question.question }} </div>
 
       <div id="qstntimersection" style="display: none; color:black;" class="mx-5 px-3">
         <p>Question Ends in <span id="qstn-seconds" >{{ question_duration if question_duration else 0}}</span> Seconds</p>
@@ -1341,7 +1341,11 @@
       const hasShownQR = "{{ has_shown_qr }}"
       var curQuest_url = "{{ current_question.name }}"
       const pollId = "{{ name }}";
-      const RedirectionSeconds = "{{poll_start_seconds}}"
+      let RedirectionSeconds = (() => {
+        const raw = "{{poll_start_seconds}}"?.trim() || "";
+        const parsed = parseInt(raw, 10);
+        return Number.isNaN(parsed) ? 5 : parsed; // fallback to 5
+      })();      
       const loadingSection = document.getElementById("loading-section");
 
       const first = document.getElementById("poll-qr-sectionn")
@@ -1364,7 +1368,6 @@
       const questionName = "{{ current_question.name }}";
 
       const playername = document.getElementById("player-name");
-
 
 
 
@@ -1460,7 +1463,7 @@
           if (loadingSection) loadingSection.style.display = "block";
           
           // Start countdown
-          let secondsLeft = RedirectionSeconds || 5;  // Set fallback
+          let secondsLeft = RedirectionSeconds || 5;  // Set fallback         
           countdownEl.textContent = secondsLeft;
           
           const interval = setInterval(() => {
@@ -1488,7 +1491,7 @@
           second.style.display = "none";  
           console.log("current qstn event called!!",cur_url);
           if (loadingSection) loadingSection.style.display = "block";
-          let secondsLeft = RedirectionSeconds;
+          let secondsLeft = RedirectionSeconds || 5;  // Set fallback
             countdownEl.textContent = secondsLeft;
 
             const interval = setInterval(() => {
@@ -1521,7 +1524,7 @@
               if (loadingSection) loadingSection.style.display = "block";
               if (countdownEl) countdownEl.style.display = "block";
   
-            let secondsLeft = RedirectionSeconds || 5;  // Set fallback
+              let secondsLeft = RedirectionSeconds || 5;  // Set fallback
             if (countdownEl) countdownEl.textContent = secondsLeft;
 
             const interval = setInterval(() => {
@@ -1714,7 +1717,11 @@
     var is_poll_admin = "{{ is_poll_admin }}"
     var curQuest_url = "{{ current_question.name }}"
     const hasShownQR = "{{ has_shown_qr }}"
-    const RedirectionSeconds = "{{poll_start_seconds}}"
+    let RedirectionSeconds = (() => {
+      const raw = "{{poll_start_seconds}}"?.trim() || "";
+      const parsed = parseInt(raw, 10);
+      return Number.isNaN(parsed) ? 5 : parsed; // fallback to 5
+    })();
     const workflow_phase = "{{workflow_phase}}"
 
     const loadingSection = document.getElementById("loading-section");
