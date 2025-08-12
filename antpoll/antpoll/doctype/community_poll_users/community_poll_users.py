@@ -28,7 +28,7 @@ class CommunityPollUsers(Document):
 				"send_welcome_email":0,
 				"user_type":"System User"
 			})
-			###############################  modify antpoll######################
+
 			if frappe.db.exists("Role", "Participant"):
 				doc.append("roles", {"role": "Participant"})
 			doc.save(ignore_permissions=True)
@@ -70,9 +70,3 @@ class CommunityPollUsers(Document):
 		print("uiddddddddddddddd---",uid)
 		if uid:
 			frappe.db.set_value(self.doctype, self.name, "user_id", uid)
-
-
-
-
-
-
