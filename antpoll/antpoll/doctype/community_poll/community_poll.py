@@ -41,8 +41,6 @@ class CommunityPoll(WebsiteGenerator):
 
         poll_start_seconds = int(poll_start_duration.total_seconds())
         context.poll_start_seconds = poll_start_seconds
-
-        print("\n\n\n\n\n poll_start_seconds",poll_start_seconds,"\n\n\n\n\n\n")
             
         # questions = self.questions
         questions = self.questions or []

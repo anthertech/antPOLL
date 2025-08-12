@@ -760,9 +760,7 @@
   white-space: nowrap;
   pointer-events: none;
 }
-
-
-    </style>
+</style>
   
   </head>
   {% extends base_template %}
@@ -794,7 +792,6 @@
         <p style="font-size:16px; color:#444; margin-bottom:15px;">
           Please read the instructions before starting the poll:
         </p>
-  
         <div style="font-size:15px; color:#333; line-height:1.7; margin-bottom:25px; text-align:left;">
           {{ instructions }}
         </div>
@@ -805,18 +802,13 @@
   
       </div>
     </div>
- 
-    {% endif %}
 
+    {% endif %}
 
     <div class="qr-image" id="qr-image-start"></div>
     <h5 class="mt-5 text-dark ml-3 scan-qr-text" style="font-weight: 500;">SCAN THE QR FOR JOINING !</h5>
-   
     <!-- Rules Button -->
-    
-
   </div>
-
   <!-- Image Section -->
   <div class="image-side" id="qr-section">
     <img src="/assets/antpoll/images/bgpoll.png" alt="Poll Image" class="poll-image">
@@ -824,14 +816,7 @@
     <button id="rules-button" class="instruction-btn" >INSTRUCTIONS</button>
     <button id="start-poll-button" class="next-btnn-start pollstartbtn">START</button>
   </div>
-
-  <div id="reaction-container" style="
-  position: fixed;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 9999;"></div>
+  <div id="reaction-container" style="position: fixed;left: 0;width: 100%;height: 100%;pointer-events: none;z-index: 9999;"></div>
 
   {% endif %}
 
@@ -923,10 +908,7 @@
           BEGIN
         </button>
       </div>
-    
- 
-     
-    
+
       {% endif %}
     </div>
     {% endif %}
@@ -944,8 +926,6 @@
   </div>
   {% endif %}
     <!-- Donut and Leaderboard Section -->
-
-
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
@@ -1259,7 +1239,6 @@
                 plugins: [ChartDataLabels]
               });
             }
-          
             // Load leaderboard on page ready
             window.addEventListener('DOMContentLoaded', loadLeaderboardData);
           </script>
@@ -1267,14 +1246,11 @@
     {% endif %}
 
     {% if qstn_status == "Closed" and is_poll_admin != "True" and show_leaderboard == "true" and is_shown_leaderboard == 1 and next_question_url %}
-    
+  
     <!--user leaderboard show-->
     <div id="points-feedback-section" style="text-align: center; margin-top:20% !important;  margin-left: auto; margin-right: auto;">
-     
           <p id="point-feedback-congrts" style="font-size: 1.25rem; color: #2f855a; font-weight: 500;"> </p>
-
           <div id="userleaderboard" class="mt-2" style=" padding: 1rem; text-align: center; background: #f8f9fa; border-radius: 8px;">
-            
             <h5 class="pt-2"><strong>Your are at <span style="color:rgb(219, 8, 8); font-size: 24px;">{{ positions if positions else 0 }}</span> position</strong></h5>
             <p><strong><span style="color:rgb(219, 8, 8); font-size: 24px;">{{ user_total_points }}</span></strong> Points in total</p>
             
@@ -1284,58 +1260,42 @@
 
     {% if qstn_status == "Closed" and is_poll_admin != "True" and show_leaderboard == "true" and is_shown_leaderboard == 1 and not next_question_url %}
     <div id="points-feedback-section" style="text-align: center; margin-top:20% !important;  margin-left: auto; margin-right: auto;">
-     
       <p id="point-feedback-congrts" style="font-size: 1.25rem; color: #2f855a; font-weight: 500;">Thank you for the Participation!</p>
-
       <div id="userleaderboard" class="mt-2" style=" padding: 1rem; text-align: center; background: #f8f9fa; border-radius: 8px;">
-        
         <h5 class="pt-2"><strong>Your are at <span style="color:rgb(219, 8, 8); font-size: 24px;">{{ positions if positions else 0 }}</span> position</strong></h5>
         <p>Final Score is <strong><span style="color:rgb(219, 8, 8); font-size: 24px;">{{ user_total_points }}</span></strong></p>
-        
     </div>
   </div>
    <div class="text-center mt-5 pt-5">
     <strong><p style="color:black;">End! <a href="/app">Back to Home</a></p></strong>
    </div>
     {% endif %}
-   
     </div> 
 </div>
     
 {% else %}
 
-
 <div id="pollendscreen">
   <div class="d-flex justify-content-center align-items-center" style="height: 70vh;">
     <div class="text-center p-4 px-md-5 rounded-5 shadow" style="max-width: 500px; width: 100%;">
-
       <!-- Main Heading -->
        <img src="/assets/antpoll/images/pollend.png" alt="Message Icon">
       <h2 class="fw-bold mb-2" style="color: rgb(58, 56, 56);">Poll Closed!</h2>
-
-      <!-- Score Message -->
-   
       <!-- Thank You Note -->
       <p class="text-secondary mb-3">Thanks for joining — see you in the next one!</p>
-
       <!-- Happy Polling Button Style -->
       <div class="d-grid gap-2 mt-3">
         <button class=" py-3 my-3 fw-semibold confetti-button" style="font-size: 16px;">🎉 Happy Polling!</button>
         <button class="btn btn-light mb-3 fw-semibold" style="font-size: 15px;"><a href="/app">Back to Home</a></button>
       </div>
-
     </div>
   </div>
 </div>
 
-
  {% endif %}
 
-
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
-
     <script>
-    
       var next_question_url = "{{ next_question_url }}"
       var is_poll_admin = "{{ is_poll_admin }}"
       const hasShownQR = "{{ has_shown_qr }}"
@@ -1482,7 +1442,6 @@
               }
           }, 1000);
       });
-      
 
         frappe.realtime.on('goto_cur_question_event', (cur_url) => {
 
@@ -1511,7 +1470,6 @@
           }, 1000);
         });
 
-        
         frappe.realtime.on('update_qstn_leaderboard', (data) => {
           console.log("777777777----2222222")
           if (data) {
@@ -1574,7 +1532,6 @@
           }
         });
       });
-      
 
         // Admin-only section
         if (is_poll_admin == "True") { 
@@ -1635,20 +1592,15 @@
                         callback: function (r) {
                             if (r.message.status === "success") {
                                 console.log("next btn return true!!")
-                                
-                               
                             }
                         },
                         error: function (err) {
                             frappe.msgprint("Error broadcasting next question URL.");
                         }
-                    });
-
-                    
+                    });             
                 } 
         });
       }
-
       if(starttimerbtn){
         starttimerbtn.addEventListener('click', () => {
           console.log("timer button clicked!!");
@@ -1668,7 +1620,6 @@
           }
 
           if (workflow_phase === "Has Started" && questionEndTime) {
-
             console.log("neeeeeeeeeeeeeeeeeeeeeeeeeeeewwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
             const endTime = new Date(questionEndTime).getTime();
             const now = new Date().getTime();
@@ -1697,13 +1648,9 @@
         } else {
             console.log("Question not in active phase or no end time defined.");
         }
-
     }
   });
   
-
-  
-
     document.addEventListener("DOMContentLoaded", function () {
       
     const questionName = "{{ current_question.name }}";
@@ -1833,7 +1780,6 @@
         }, 500); 
     }, 2000);  
     }
-      
     // Function to check if user has already voted
    function checkIfUserHasVoted() {
     console.log("calling user voted check method!!!!!")
@@ -1883,9 +1829,7 @@
           radio.disabled = true;
       });
     }
-
     }
-  
 
     const radioButtons = document.querySelectorAll('input[name="selected_option"]');
     const submitButton = document.getElementById("submit-vote-button");
@@ -1941,7 +1885,6 @@
       });
   });
 }
-
     function pad(n) {
       return n < 10 ? '0' + n : n;
     }
@@ -1998,8 +1941,6 @@
             }
           }
         }
-    
-  
           const feedbackEl = document.getElementById("points-feedback");
           if (feedbackEl) {
             console.log("feedback field available!!")
@@ -2018,10 +1959,7 @@
 if(qstnstatus == "Closed"){
     loadUserPointsStatus()
 }
-
-
     });
-
 
     (function() {
       var buttons = document.querySelectorAll('.confetti-button');
@@ -2040,7 +1978,6 @@ if(qstnstatus == "Closed"){
         });
       });
     })();
-
 
     let qrCode;
     let qrCode2;
@@ -2079,12 +2016,6 @@ if(qstnstatus == "Closed"){
 
     const currentURL = window.location.href;
     generateQRCode(currentURL);
-
-    
- 
-    
-
-    
     
 </script>
 </body>
