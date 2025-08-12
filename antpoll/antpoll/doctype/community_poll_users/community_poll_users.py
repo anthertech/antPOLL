@@ -15,8 +15,6 @@ class CommunityPollUsers(Document):
 			frappe.throw("Password must be at least 8 characters long")
 
 	def after_insert(self):
-		print("\n\n\after inserttttttttttttttt\n\n\n\n")
-		# user_doc.set_password(self.password)
 		if not frappe.db.exists('User',self.email):
 			doc=frappe.new_doc('User')
 			doc.update({
@@ -28,7 +26,6 @@ class CommunityPollUsers(Document):
 				"send_welcome_email":0,
 				"user_type":"System User"
 			})
-
 			if frappe.db.exists("Role", "Participant"):
 				doc.append("roles", {"role": "Participant"})
 			doc.save(ignore_permissions=True)
@@ -46,14 +43,14 @@ class CommunityPollUsers(Document):
 				doc.append("roles", {"role": "Participant"})
 			doc.save(ignore_permissions=True)
 
-			###### check user permission exist
+			# check user permission exist
 			if not frappe.db.exists('User Permission',{"user":self.email,"allow":"User","for_value":self.email}):
 				self.create_user_permission()
 
 		if self.email:
-			print("\n\n\n\nyessssss/////////////////////////////////////////////////////////")
 			self.assign_user()
 			
+	# create user permission
 	def create_user_permission(self):
 		doc_perm=frappe.new_doc('User Permission')
 		doc_perm.update({
@@ -64,9 +61,8 @@ class CommunityPollUsers(Document):
 		})
 		doc_perm.save(ignore_permissions=True)
 
+	# assigning user link
 	def assign_user(self):
-		print("hggggggggggggggggggggggggggggggggg------------------------------------")
 		uid = frappe.db.get_value("User", {"email": self.email}, "name")
-		print("uiddddddddddddddd---",uid)
 		if uid:
 			frappe.db.set_value(self.doctype, self.name, "user_id", uid)
