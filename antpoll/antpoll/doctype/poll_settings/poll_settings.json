@@ -7,6 +7,7 @@
  "field_order": [
   "poll_management_section",
   "poll_start_duration",
+  "set_poll_masters",
   "column_break_gfdg",
   "question_duration",
   "poll_instructions_section",
@@ -55,12 +56,18 @@
    "fieldname": "question_duration",
    "fieldtype": "Int",
    "label": "Question Duration"
+  },
+  {
+   "fieldname": "set_poll_masters",
+   "fieldtype": "Table MultiSelect",
+   "label": "Set Poll Masters",
+   "options": "Poll Master Table"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-05-16 11:18:17.320138",
+ "modified": "2025-08-13 12:47:09.774258",
  "modified_by": "Administrator",
  "module": "antPoll",
  "name": "Poll Settings",

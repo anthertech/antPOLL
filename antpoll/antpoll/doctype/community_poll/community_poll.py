@@ -622,3 +622,35 @@ def reset(docname):
     doc.save(ignore_permissions=True)
     frappe.db.commit()
     return "success"
+
+####### add poll participant role to users ##########
+
+@frappe.whitelist()
+def add_poll_participants(users):
+    # Accept both JSON string and list from JS
+    if isinstance(users, str):
+        import json
+        users = json.loads(users)
+
+    role_name = "Participant"
+
+    # Ensure role exists
+    if not frappe.db.exists("Role", role_name):
+        frappe.get_doc({
+            "doctype": "Role",
+            "role_name": role_name
+        }).insert(ignore_permissions=True)
+
+    for user in users:
+        # Only add if user doesn't already have the role
+        if not frappe.db.exists("Has Role", {"parent": user, "role": role_name}):
+            frappe.get_doc({
+                "doctype": "Has Role",
+                "parent": user,
+                "parentfield": "roles",
+                "parenttype": "User",
+                "role": role_name
+            }).insert(ignore_permissions=True)
+
+    frappe.db.commit()
+    return f"Added Participant role to {len(users)} user(s)."
