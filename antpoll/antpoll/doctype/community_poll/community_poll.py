@@ -7,6 +7,7 @@ from datetime import datetime, date
 from collections import defaultdict
 from frappe.utils import getdate,now_datetime, add_to_date
 import urllib.parse
+import json
 
 class CommunityPoll(WebsiteGenerator):
 
@@ -627,9 +628,8 @@ def reset(docname):
 
 @frappe.whitelist()
 def add_poll_participants(users):
-    # Accept both JSON string and list from JS
+    """Assign Participant role to users and ensure they exist in Community Poll Users."""
     if isinstance(users, str):
-        import json
         users = json.loads(users)
 
     role_name = "Participant"
@@ -641,16 +641,30 @@ def add_poll_participants(users):
             "role_name": role_name
         }).insert(ignore_permissions=True)
 
-    for user in users:
-        # Only add if user doesn't already have the role
-        if not frappe.db.exists("Has Role", {"parent": user, "role": role_name}):
+    for user_id in users:
+        # Get email of the User
+        email = frappe.db.get_value("User", user_id, "email")
+
+        # Add Participant role if missing
+        if not frappe.db.exists("Has Role", {"parent": user_id, "role": role_name}):
             frappe.get_doc({
                 "doctype": "Has Role",
-                "parent": user,
+                "parent": user_id,
                 "parentfield": "roles",
                 "parenttype": "User",
                 "role": role_name
             }).insert(ignore_permissions=True)
 
+        # Ensure Community Poll User exists
+        if email and not frappe.db.exists("Community Poll Users", {"email": email}):
+            # Create Community Poll User record
+            passw = frappe.db.get_value("User", user_id, "new_password")
+            cpu_doc = frappe.new_doc("Community Poll Users")
+            cpu_doc.email = email
+            cpu_doc.first_name = frappe.db.get_value("User", user_id, "full_name")
+            cpu_doc.mobile_number = frappe.db.get_value("User", user_id, "mobile_no")
+            cpu_doc.password = passw if passw else frappe.generate_hash(length=12)  # auto-generated password
+            cpu_doc.insert(ignore_permissions=True)
+
     frappe.db.commit()
-    return f"Added Participant role to {len(users)} user(s)."
+    return f"Processed {len(users)} users."
