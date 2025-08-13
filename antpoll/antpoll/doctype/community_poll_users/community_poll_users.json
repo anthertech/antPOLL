@@ -34,8 +34,7 @@
   {
    "fieldname": "password",
    "fieldtype": "Data",
-   "label": "Password",
-   "reqd": 1
+   "label": "Password"
   },
   {
    "fieldname": "first_name",
@@ -48,15 +47,15 @@
   {
    "fieldname": "user_id",
    "fieldtype": "Link",
-   "hidden": 1,
-   "label": "User Id",
-   "options": "User"
+   "label": "User ID",
+   "options": "User",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-11 18:10:31.446876",
+ "modified": "2025-08-13 09:32:16.150181",
  "modified_by": "Administrator",
  "module": "antPoll",
  "name": "Community Poll Users",

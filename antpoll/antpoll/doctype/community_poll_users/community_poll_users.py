@@ -8,13 +8,20 @@ import time
 
 class CommunityPollUsers(Document):
 	def validate(self):
-		if frappe.db.exists("User", {"email": self.email}):
-			frappe.throw("A user with this email already exists")
+		if frappe.db.exists("Community Poll Users", {"email": self.email}):
+				frappe.throw("A user with this email already exists")
 
-		if len(self.password) < 8:
+		if self.password and len(self.password) < 8:
 			frappe.throw("Password must be at least 8 characters long")
 
 	def after_insert(self):
+		if self.password:
+			password = self.password
+		else:
+			password = frappe.generate_hash(length=12)
+			self.password = password
+			self.save(ignore_permissions=True)
+
 		if not frappe.db.exists('User',self.email):
 			doc=frappe.new_doc('User')
 			doc.update({
@@ -22,7 +29,7 @@ class CommunityPollUsers(Document):
 				# "time_zone":time_zone,
 				"first_name":self.first_name,
 				"mobile_no":self.mobile_number,
-				"new_password":self.password,
+				"new_password":password,
 				"send_welcome_email":0,
 				"user_type":"System User"
 			})
@@ -33,7 +40,6 @@ class CommunityPollUsers(Document):
 			login_manager = LoginManager()
 			login_manager.authenticate(self.email, self.password)
 			login_manager.post_login()
-
 			self.create_user_permission()
 		else:
 			# if the user exist with this email
