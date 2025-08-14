@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"Pk6qJn2Tua\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"NdN0NZrZbQ\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Poll System</span>\",\"col\":12}},{\"id\":\"wriAH-3Ou0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Poll\",\"col\":3}},{\"id\":\"o0EP3NHJiZ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Poll Questions\",\"col\":3}},{\"id\":\"658Zbi8rJR\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Poll Users\",\"col\":3}},{\"id\":\"INPxVIuliV\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Poll Settings\",\"col\":3}},{\"id\":\"TvJ3VLii6t\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Energy Point Rule\",\"col\":3}},{\"id\":\"FJ1LkEGiIJ\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"m-DGpebBMD\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Summary <br></b></span>\",\"col\":12}},{\"id\":\"S8LJx2PcN3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Result Summary\",\"col\":3}},{\"id\":\"xjiZBdVyDR\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Leaderboard\",\"col\":3}},{\"id\":\"cJa8LvXI2H\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Users\",\"col\":3}},{\"id\":\"mDES43gmv-\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Energy Point Log\",\"col\":3}},{\"id\":\"eiaZpwUb0n\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Energy Point Settings\",\"col\":3}}]",
+ "content": "[{\"id\":\"Pk6qJn2Tua\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"NdN0NZrZbQ\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Poll System</span>\",\"col\":12}},{\"id\":\"wriAH-3Ou0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Poll\",\"col\":3}},{\"id\":\"o0EP3NHJiZ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Poll Questions\",\"col\":3}},{\"id\":\"INPxVIuliV\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Poll Settings\",\"col\":3}},{\"id\":\"TvJ3VLii6t\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Energy Point Rule\",\"col\":3}},{\"id\":\"FJ1LkEGiIJ\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"m-DGpebBMD\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Summary <br></b></span>\",\"col\":12}},{\"id\":\"S8LJx2PcN3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Result Summary\",\"col\":3}},{\"id\":\"xjiZBdVyDR\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Leaderboard\",\"col\":3}},{\"id\":\"cJa8LvXI2H\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Users\",\"col\":3}},{\"id\":\"mDES43gmv-\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Energy Point Log\",\"col\":3}},{\"id\":\"eiaZpwUb0n\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Energy Point Settings\",\"col\":3}}]",
  "creation": "2025-04-29 09:28:27.742372",
  "custom_blocks": [],
  "docstatus": 0,
@@ -13,7 +13,7 @@
  "is_hidden": 0,
  "label": "Poll",
  "links": [],
- "modified": "2025-06-24 15:41:39.144122",
+ "modified": "2025-08-14 12:30:04.975356",
  "modified_by": "Administrator",
  "module": "antPoll",
  "name": "Poll",
@@ -24,14 +24,19 @@
  "quick_lists": [],
  "roles": [
   {
-   "role": "Poll Master"
-  },
-  {
    "role": "Participant"
   }
  ],
  "sequence_id": 1.0,
  "shortcuts": [
+  {
+   "color": "Orange",
+   "doc_view": "List",
+   "label": "Users",
+   "link_to": "User",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
   {
    "color": "Red",
    "doc_view": "List",
@@ -65,14 +70,6 @@
   {
    "color": "Orange",
    "doc_view": "List",
-   "label": "Users",
-   "link_to": "Community Poll Users",
-   "stats_filter": "[]",
-   "type": "DocType"
-  },
-  {
-   "color": "Orange",
-   "doc_view": "List",
    "label": "Poll Questions",
    "link_to": "Poll Question",
    "stats_filter": "[]",
@@ -83,14 +80,6 @@
    "doc_view": "List",
    "label": "Energy Point Log",
    "link_to": "Energy Point Log",
-   "stats_filter": "[]",
-   "type": "DocType"
-  },
-  {
-   "color": "Blue",
-   "doc_view": "List",
-   "label": "Poll Users",
-   "link_to": "Community Poll Users",
    "stats_filter": "[]",
    "type": "DocType"
   },
