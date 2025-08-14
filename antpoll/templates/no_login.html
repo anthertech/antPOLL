@@ -8,101 +8,132 @@
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet"/>
   <style>
-    /* Reset & base */
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body, html {
-      width:100%; height:100%;
-      font-family: 'Poppins', sans-serif;
-    }
-    
+   /* Reset & base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    body {
-      background-image: url("/assets/antpoll/images/svgbg.svg") !important;
-      font-family: 'Segoe UI', sans-serif;
-      background-size: cover;
-      background-repeat: no-repeat;
-      margin: 0;
-      padding: 0;
-      display: flex; align-items: center; justify-content: center;
-    }
-    
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: 'Poppins', sans-serif;
+}
 
-    /* Card wrapper */
-    .card {
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      width: 500px;
-      padding: 40px 30px;
-      text-align: center;
-    }
-    .card h1 {
-      font-size: 1.8rem;
-      color: #333;
-      margin-top:20px;
-      margin-bottom: 2px;
-      font-weight: 600;
-    }
+/* Page background */
+body {
+  background-image: url("/assets/antpoll/images/svgbg.svg") !important;
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    /* Container for embedded form */
-    .iframe-wrapper {
-      margin-top: 10px;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .iframe-wrapper iframe {
-      scrollbar-width: none;
-      overflow-y: hidden;
-      width: 100%;
-      height: 500px;  /* adjust if your form is taller */
-      border: none;
-    }
+/* Card container */
+.card {
+  background: rgba(255, 255, 255, 0.95); /* slightly transparent */
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 400px;
+  padding: 30px 25px;
+  text-align: center;
+  backdrop-filter: blur(6px);
+}
 
-    /* Login link */
-    .login-link {
-      font-size: 0.9rem;
-      color: #666;
-    }
-    .login-link a {
-      color: #9b5de5;
-      text-decoration: none;
-      font-weight: 500;
-    }
-    .login-link a:hover {
-      text-decoration: underline;
-    }
-   
-    
-    /* Responsive adjustments */
-@media (max-width: 600px) {
+.card h1 {
+  font-size: 1.8rem;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+/* Signup form */
+#signupForm {
+  width: 100%;
+}
+
+#signupForm input {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: 0.3s;
+  background: #f9f9f9;
+}
+
+#signupForm input:focus {
+  border-color: #5563DE;
+  background: #fff;
+  box-shadow: 0 0 6px rgba(85, 99, 222, 0.3);
+}
+
+#signupForm button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #5563DE, #6a73e5);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+#signupForm button:hover {
+  background: linear-gradient(135deg, #3d4bb7, #5a62cc);
+  transform: translateY(-1px);
+}
+
+/* Login link */
+.login-link {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 15px;
+}
+
+.login-link a {
+  color: #5563DE;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 500px) {
   .card {
-    padding: 15px 20px;
-   margin-left: 50px;
-   margin-right: 50px
+    margin: 0 20px;
+    padding: 20px;
   }
-
   .card h1 {
     font-size: 1.5rem;
-    margin-bottom: 0;
-    margin-top: 10px;
   }
-
-
 }
-  </style>
+
+ 
+</style>
 </head>
 <body>
-
   <div class="card">
     <h1>Create Account</h1>
 
-    <!-- Embed your existing Web Form here -->
     <div class="iframe-wrapper">
-      <iframe style="border: 0; width: 100%; height:500px; " id="iframeResizer0" scrolling="no"
-        src="{{ web_form_url }}"
-        title="Join Community Form">
-       
-      </iframe>
+      <form id="signupForm">
+        <input type="text" name="full_name" placeholder="Full Name" required><br>
+        <input type="email" name="email" placeholder="Email" required><br>
+        <input type="password" name="password" placeholder="Password" required><br>
+        <input type="text" name="mobile" placeholder="Mobile"><br>
+        <button type="submit">Create Account</button>
+      </form>
     </div>
 
     <!-- Login link for existing users -->
@@ -116,36 +147,48 @@
 
     {% endif %}
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-    const iframe = document.querySelector('.iframe-wrapper iframe');
-    iframe.addEventListener('load', () => {
-      setTimeout(checkLoginAndRedirect, 500);
-    });
-  
-    function checkLoginAndRedirect() {
-      fetch('/api/method/frappe.auth.get_logged_user', {
-        credentials: 'same-origin'
-      })
-      .then(r => r.json())
-      .then(data => {
-        if (data.message && data.message !== 'Guest') {
-          // build redirect from the real path, not the title
-          const currentPath = window.location.pathname; // e.g. "/COMM-POLL-04-0126"
-          const params = new URLSearchParams(window.location.search);
-          const quest = params.get('quest');
-          const redirectTo = currentPath + (quest ? '?quest=' + encodeURIComponent(quest) : '');
-          window.location.href = redirectTo;
-          console.log(data.message);
-          console.log("logged!!",redirectTo);
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPath = window.location.pathname; 
+      const params = new URLSearchParams(window.location.search);
+      const quest = params.get('quest');
+      const redirectTo = currentPath + (quest ? '?quest=' + encodeURIComponent(quest) : '');
+      document.getElementById('signupForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+      
+        const res = await fetch('/api/method/antpoll.antpoll.doctype.community_poll.community_poll.register_and_login', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        // Handle the structure: data.message may be an object
+        let response = data.message || data;  
+        let status = response.status;
+        let msgText = typeof response.message === 'string' ? response.message : JSON.stringify(response);
+      
+        if (status === "success") {
+          Swal.fire({
+            icon: 'success',
+            title: 'Account Created',
+            text: msgText || 'Your account has been created successfully!',
+            confirmButtonColor: '#5563DE'
+          }).then(() => {
+            window.location.href = redirectTo;
+          });
         } else {
-          setTimeout(checkLoginAndRedirect, 500);
-          console.log("still guest");
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: msgText || 'Something went wrong!'
+          });
         }
-      })
-      .catch(() => {
-        setTimeout(checkLoginAndRedirect, 500);
       });
-    }
+      
+      
+    });
+   
   </script>
   
   

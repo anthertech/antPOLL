@@ -7,6 +7,8 @@ from datetime import datetime, date
 from collections import defaultdict
 from frappe.utils import getdate,now_datetime, add_to_date
 import urllib.parse
+from frappe.auth import LoginManager
+import json
 
 class CommunityPoll(WebsiteGenerator):
 
@@ -574,7 +576,6 @@ def get_view_count(poll_id,question_id):
 
 @frappe.whitelist()
 def reset(docname):
-    print("\n\nreset method called!!!")
     doc = frappe.get_doc("Community Poll", docname)
     poll_id = doc.name
     doc.has_shown_qr = 0
@@ -622,3 +623,98 @@ def reset(docname):
     doc.save(ignore_permissions=True)
     frappe.db.commit()
     return "success"
+
+####### add poll participant role to users ##########
+
+@frappe.whitelist()
+def add_poll_participants(users):
+    """Assign Participant role to users and ensure they exist in Community Poll Users."""
+    if isinstance(users, str):
+        users = json.loads(users)
+
+    role_name = "Participant"
+
+    # Ensure role exists
+    if not frappe.db.exists("Role", role_name):
+        frappe.get_doc({
+            "doctype": "Role",
+            "role_name": role_name
+        }).insert(ignore_permissions=True)
+
+    for user_id in users:
+        # Get email of the User
+        email = frappe.db.get_value("User", user_id, "email")
+
+        # Add Participant role if missing
+        if not frappe.db.exists("Has Role", {"parent": user_id, "role": role_name}):
+            frappe.get_doc({
+                "doctype": "Has Role",
+                "parent": user_id,
+                "parentfield": "roles",
+                "parenttype": "User",
+                "role": role_name
+            }).insert(ignore_permissions=True)
+    frappe.db.commit()
+    return f"Processed {len(users)} users."
+
+
+@frappe.whitelist(allow_guest=True)
+def register_and_login(full_name, email, password, mobile=None):
+    role_name = "Participant"
+    print(full_name, email, mobile)
+
+    # If user already exists
+    if frappe.db.exists("User", email):
+        return {
+            "status": "error",
+            "message": "This email is already registered. Please log in."
+        }
+    # Check for duplicate mobile
+    if mobile and frappe.db.exists("User", {"mobile_no": mobile}):
+        return {
+            "status": "error",
+            "message": "This mobile number is already registered."
+        }
+    # Create user
+    user = frappe.get_doc({
+        "doctype": "User",
+        "email": email,
+        "first_name": full_name,
+        "mobile_no": mobile,
+        "enabled": 1,
+        "new_password": password,
+        "send_welcome_email": 0,
+        "user_type": "System User"
+    })
+
+    # Add Participant role if it exists
+    if frappe.db.exists("Role", role_name):
+        user.append("roles", {"role": role_name})
+
+    user.insert(ignore_permissions=True)
+    frappe.db.commit()
+
+    # Create user permission
+    create_user_permission(user.email)
+
+    # Log in the new user
+    login_manager = LoginManager()
+    login_manager.authenticate(email, password)
+    login_manager.post_login()
+
+    return {
+        "status": "success",
+        "message": "Account created successfully."
+    }
+
+
+def create_user_permission(user_email):
+    doc_perm = frappe.new_doc('User Permission')
+    doc_perm.update({
+        "user": user_email,
+        "allow": "User",
+        "for_value": user_email,
+        "apply_to_all_doctypes": 1
+    })
+    doc_perm.insert(ignore_permissions=True)
+    frappe.db.commit()

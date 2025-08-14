@@ -22,7 +22,12 @@ app_license = "mit"
 # ]
 
 # Includes in <head>
-# ------------------
+# ---------------
+
+doctype_list_js = {
+    "User": "public/js/user_list.js"
+}
+
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/antpoll/css/antpoll.css"
