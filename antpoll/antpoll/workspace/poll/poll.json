@@ -24,19 +24,14 @@
  "quick_lists": [],
  "roles": [
   {
+   "role": "Poll Master"
+  },
+  {
    "role": "Participant"
   }
  ],
  "sequence_id": 1.0,
  "shortcuts": [
-  {
-   "color": "Orange",
-   "doc_view": "List",
-   "label": "Users",
-   "link_to": "User",
-   "stats_filter": "[]",
-   "type": "DocType"
-  },
   {
    "color": "Red",
    "doc_view": "List",
